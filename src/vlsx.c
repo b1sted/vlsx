@@ -29,8 +29,7 @@ int main(void) {
 
     struct tb_event ev;
     while (app.running) {
-        if (!render())
-            return EXIT_FAILURE;
+        render();
 
         int poll_code = tb_poll_event(&ev);
         if (poll_code == TB_ERR) {

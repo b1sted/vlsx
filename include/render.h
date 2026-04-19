@@ -5,6 +5,6 @@
 
 #include <stdbool.h>
 
-bool render(void);
+void render(void);
 
 #endif /* RENDER_H */

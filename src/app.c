@@ -6,6 +6,11 @@
 
 AppState app = {
     .running = true,
+
+    .current_focus = FOCUS_SIDEBAR,
+    .menu_items = 0,
+
+    .sidebar_cursor = 0,
 };
 
 WinSizes sizes = {

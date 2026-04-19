@@ -5,8 +5,19 @@
 
 #include <stdbool.h>
 
+#define APP_VERSION "v0.1-alpha"
+
+typedef enum {
+    FOCUS_SIDEBAR,
+} FocusOn;
+
 typedef struct {
     bool running;
+
+    FocusOn current_focus;
+    int menu_items;
+
+    int sidebar_cursor;
 } AppState;
 
 typedef struct {
