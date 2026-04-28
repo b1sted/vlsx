@@ -2,48 +2,32 @@
 
 #include <stdbool.h>
 
-#include "app.h"
-#include "render.h"
-
 #include "termbox2.h"
 
-#define COLOR_COBALT 25
-#define COLOR_WHITE 231
-#define COLOR_BLACK 232
-#define COLOR_CHARCOAL 236
-#define COLOR_SILVER 248
+#include "app.h"
+#include "render.h"
+#include "ui.h"
 
-#define ARROW_L 0x2192 /* → */
+#include "screens/screen_ip.h"
 
-#define BOX_TL 0x250C /* ┌ */
-#define BOX_BL 0x2514 /* └ */
-
-#define BOX_TR 0x2510 /* ┐ */
-#define BOX_BR 0x2518 /* ┘ */
-
-#define BOX_H 0x2500 /* ─ */
-#define BOX_V 0x2502 /* │ */
-
-#define BOX_VL 0x2524 /* ┤ */
-#define BOX_VR 0x251C /* ├ */
-
-#define BOX_BB 0x252C /* ┬ */
-#define BOX_UB 0x253C /* ┼ */
-#define BOX_BU 0x2534 /* ┴ */
-
-#define MIN_WIDTH 80
+#define MIN_WIDTH 90
 #define MIN_HEIGHT 24
-
-static const char *main_menu[] = {"1. IP & VLSM", "2. MAC Tools", "3. Metrics",
-                                  "4. DHCP Timers"};
 
 static void filing_background(const int width, const int height);
 
 static void render_window(const int width, const int height);
 static void render_outline(const int win_right, const int win_bottom);
-static void render_titlebar(int *sidebar_len);
-static void render_main_menu(int *sidebar_len);
-static void render_divider(const int sidebar_len, const int win_bottom);
+static void render_titlebar(void);
+static void render_main_menu(void);
+static void render_divider(const int win_bottom);
+
+static void render_tabbar(void);
+static void render_content(void);
+
+static const char *main_menu[] = {"1. IP & VLSM", "2. MAC Tools", "3. Metrics",
+                                  "4. DHCP Timers"};
+
+static int sidebar_len = 0;
 
 static void filing_background(const int width, const int height) {
     for (int row = 0; row < width; row++) {
@@ -81,12 +65,10 @@ static void render_window(const int width, const int height) {
         tb_set_cell(win_right + 1, col, ' ', COLOR_CHARCOAL, COLOR_CHARCOAL);
     }
 
-    int sidebar_len = 0;
-
     render_outline(win_right, win_bottom);
-    render_titlebar(&sidebar_len);
-    render_main_menu(&sidebar_len);
-    render_divider(sidebar_len, win_bottom);
+    render_titlebar();
+    render_main_menu();
+    render_divider(win_bottom);
 }
 
 static void render_outline(const int win_right, const int win_bottom) {
@@ -116,22 +98,22 @@ static void render_outline(const int win_right, const int win_bottom) {
     }
 }
 
-static void render_titlebar(int *sidebar_len) {
+static void render_titlebar(void) {
     const char *title = "vlsx " APP_VERSION;
     const int title_len = (int)strlen(title);
-    *sidebar_len = (*sidebar_len < title_len) ? title_len : *sidebar_len;
+    sidebar_len = (sidebar_len < title_len) ? title_len : sidebar_len;
 
     tb_print(sizes.win_x + 1, sizes.win_y + 1, COLOR_COBALT | TB_BOLD,
              COLOR_SILVER, title);
 }
 
-static void render_main_menu(int *sidebar_len) {
-    app.menu_items = (int)(sizeof(main_menu) / sizeof(main_menu[0]));
+static void render_main_menu(void) {
+    app.sidebar_items = (int)(sizeof(main_menu) / sizeof(main_menu[0]));
 
     int item_x = sizes.win_x + 4;
     int start_y = sizes.win_y + 3;
 
-    for (int i = 0; i < app.menu_items; i++) {
+    for (int i = 0; i < app.sidebar_items; i++) {
         int item_len = (int)(strlen(main_menu[i]));
 
         bool selected = (i == app.sidebar_cursor) ? true : false;
@@ -151,12 +133,12 @@ static void render_main_menu(int *sidebar_len) {
         tb_print(item_x, start_y, fg, bg, main_menu[i]);
 
         item_len += 5;
-        *sidebar_len = (*sidebar_len < item_len) ? item_len : *sidebar_len;
+        sidebar_len = (sidebar_len < item_len) ? item_len : sidebar_len;
         start_y += 1;
     }
 }
 
-static void render_divider(const int sidebar_len, const int win_bottom) {
+static void render_divider(const int win_bottom) {
     int divider_x = sizes.win_x + sidebar_len;
 
     for (int col = sizes.win_y + 1; col < win_bottom; col++) {
@@ -166,6 +148,32 @@ static void render_divider(const int sidebar_len, const int win_bottom) {
     tb_set_cell(divider_x, sizes.win_y, BOX_BB, COLOR_BLACK, COLOR_SILVER);
     tb_set_cell(divider_x, sizes.win_y + 2, BOX_UB, COLOR_BLACK, COLOR_SILVER);
     tb_set_cell(divider_x, win_bottom - 1, BOX_BU, COLOR_BLACK, COLOR_SILVER);
+}
+
+static void render_tabbar(void) {
+    int start_x = sizes.win_x + sidebar_len + 3;
+    int tabbar_y = sizes.win_y + 1;
+
+    switch (app.current_screen) {
+    case APP_SCR_MAIN:
+        break;
+    case APP_SCR_IP:
+        render_ip_tabbar(start_x, tabbar_y);
+        break;
+    }
+}
+
+static void render_content(void) {
+    int start_x = sizes.win_x + sidebar_len + 2;
+    int start_y = sizes.win_y + 3;
+
+    switch (app.current_screen) {
+    case APP_SCR_MAIN:
+        break;
+    case APP_SCR_IP:
+        render_ip_content(start_x, start_y);
+        break;
+    }
 }
 
 void render(void) {
@@ -182,7 +190,7 @@ void render(void) {
         int error_y = height / 2 - 1;
         tb_print(error_x, error_y, COLOR_WHITE | TB_BOLD, TB_DEFAULT, size_err);
 
-        const char *size_info = "Minimum required terminal size: 80x24";
+        const char *size_info = "Minimum required terminal size: 90x24";
         const int size_info_len = (int)strlen(size_info);
 
         int info_x = (width - size_info_len) / 2;
@@ -195,6 +203,8 @@ void render(void) {
 
     filing_background(width, height);
     render_window(width, height);
+    render_tabbar();
+    render_content();
 
     tb_present();
 

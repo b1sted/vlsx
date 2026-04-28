@@ -1,16 +1,31 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #include "app.h"
 
 AppState app = {
-    .running = true,
+    .active_field = NULL,
+    .active_accept = NULL,
 
     .current_focus = FOCUS_SIDEBAR,
-    .menu_items = 0,
+    .previous_focus = FOCUS_SIDEBAR,
+
+    .current_screen = APP_SCR_MAIN,
+    .previous_screen = APP_SCR_MAIN,
+
+    .sidebar_items = 0,
+    .tabbar_items = 0,
+    .input_count = 0,
 
     .sidebar_cursor = 0,
+    .tabbar_cursor = 0,
+    .input_cursor = 0,
+
+    .running = true,
+    .has_press_input = false,
+    .is_input_result_valid = false,
 };
 
 WinSizes sizes = {
