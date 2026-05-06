@@ -5,7 +5,7 @@
 
 #include "input.h"
 
-void input_insert(InputField *field, char ch, bool (*accept)(char)) {
+void input_insert(input_field_t *field, char ch, bool (*accept)(char)) {
     if (!accept(ch))
         return;
     if (field->len + 1 >= field->cap)
@@ -19,7 +19,7 @@ void input_insert(InputField *field, char ch, bool (*accept)(char)) {
     field->buf[field->len] = '\0';
 }
 
-void input_backspace(InputField *field) {
+void input_backspace(input_field_t *field) {
     if (!field->cursor)
         return;
 
@@ -30,7 +30,7 @@ void input_backspace(InputField *field) {
     field->buf[field->len] = '\0';
 }
 
-void input_field_clear(InputField *field) {
+void input_field_clear(input_field_t *field) {
     if (!field)
         return;
 

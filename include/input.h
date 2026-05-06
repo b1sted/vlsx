@@ -19,10 +19,10 @@ typedef struct {
     int cap;
     int len;
     int cursor;
-} InputField;
+} input_field_t;
 
-void input_insert(InputField *field, char ch, bool (*accept)(char));
-void input_backspace(InputField *field);
-void input_field_clear(InputField *field);
+void input_insert(input_field_t *field, char ch, bool (*accept)(char));
+void input_backspace(input_field_t *field);
+void input_field_clear(input_field_t *field);
 
 #endif /* INPUT_H */

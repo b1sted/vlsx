@@ -8,10 +8,17 @@
 #include "render.h"
 #include "ui.h"
 
-#include "screens/screen_ip.h"
+#include "screens/ip/screen_ip.h"
+
+#define ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))
 
 #define MIN_WIDTH 90
 #define MIN_HEIGHT 24
+
+typedef struct {
+    const char **items;
+    int count;
+} tabbar_menu_t;
 
 static void filing_background(const int width, const int height);
 
@@ -26,6 +33,18 @@ static void render_content(void);
 
 static const char *main_menu[] = {"1. IP & VLSM", "2. MAC Tools", "3. Metrics",
                                   "4. DHCP Timers"};
+
+static const char *ip_tabs[] = {"IPv4", "VLSM", "IPv6"};
+static const char *mac_tabs[] = {"Multicast MAC", "Converter"};
+static const char *met_tabs[] = {"Availability", "Goodput", "Costs"};
+static const char *dhcp_tabs[] = {"DHCPv4"};
+
+static const tabbar_menu_t tabbar_menu[] = {
+    {ip_tabs, ARRAY_LEN(ip_tabs)},
+    {mac_tabs, ARRAY_LEN(mac_tabs)},
+    {met_tabs, ARRAY_LEN(met_tabs)},
+    {dhcp_tabs, ARRAY_LEN(dhcp_tabs)},
+};
 
 static int sidebar_len = 0;
 
@@ -158,7 +177,8 @@ static void render_tabbar(void) {
     case APP_SCR_MAIN:
         break;
     case APP_SCR_IP:
-        render_ip_tabbar(start_x, tabbar_y);
+        app.tabbar_items = tabbar_menu[0].count;
+        render_ip_tabbar(start_x, tabbar_y, tabbar_menu[0].items);
         break;
     }
 }

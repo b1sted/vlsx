@@ -13,22 +13,22 @@ typedef enum {
     FOCUS_SIDEBAR,
     FOCUS_TABBAR,
     FOCUS_INPUT,
-} FocusOn;
+} focus_on_t;
 
 typedef enum {
     APP_SCR_MAIN,
     APP_SCR_IP,
-} Screens;
+} screens_t;
 
 typedef struct {
-    InputField *active_field;
+    input_field_t *active_field;
     bool (*active_accept)(char);
 
-    FocusOn current_focus;
-    FocusOn previous_focus;
+    focus_on_t current_focus;
+    focus_on_t previous_focus;
 
-    Screens current_screen;
-    Screens previous_screen;
+    screens_t current_screen;
+    screens_t previous_screen;
 
     int sidebar_items;
     int tabbar_items;
@@ -41,7 +41,7 @@ typedef struct {
     bool running;
     bool has_press_input;
     bool is_input_result_valid;
-} AppState;
+} app_state_t;
 
 typedef struct {
     int win_w;
@@ -49,9 +49,9 @@ typedef struct {
 
     int win_x;
     int win_y;
-} WinSizes;
+} win_sizes_t;
 
-extern AppState app;
-extern WinSizes sizes;
+extern app_state_t app;
+extern win_sizes_t sizes;
 
 #endif /* APP_H */

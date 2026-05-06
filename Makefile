@@ -28,7 +28,7 @@ TARGET       := $(BINDIR)/vlsx
 TARGET_DEV   := $(BINDIR)/vlsx-dev
 TARGET_LEAKS := $(BINDIR)/vlsx-leaks
 
-SRCS := $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/screens/*.c)
+SRCS := $(shell find $(SRCDIR) -name '*.c')
 
 OBJS_REL   := $(foreach f,$(SRCS),$(OBJDIR)/release/$(patsubst $(SRCDIR)/%,%,$(f:.c=.o)))
 OBJS_DEV   := $(foreach f,$(SRCS),$(OBJDIR)/dev/$(patsubst $(SRCDIR)/%,%,$(f:.c=.o)))

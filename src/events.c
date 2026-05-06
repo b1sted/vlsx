@@ -8,7 +8,7 @@
 #include "app.h"
 #include "events.h"
 
-#include "screens/screen_ip.h"
+#include "screens/ip/screen_ip.h"
 
 static void cursor_up(int *cursor);
 static void cursor_down(int *cursor, int *items_count);

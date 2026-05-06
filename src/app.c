@@ -5,7 +5,7 @@
 
 #include "app.h"
 
-AppState app = {
+app_state_t app = {
     .active_field = NULL,
     .active_accept = NULL,
 
@@ -28,7 +28,7 @@ AppState app = {
     .is_input_result_valid = false,
 };
 
-WinSizes sizes = {
+win_sizes_t sizes = {
     .win_w = 0,
     .win_h = 0,
 

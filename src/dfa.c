@@ -4,7 +4,7 @@
 
 #include "dfa.h"
 
-bool run_dfa(const DFA *dfa, const char *input) {
+bool run_dfa(const dfa_t *dfa, const char *input) {
     if (!dfa || !input || !input[0])
         return false;
 

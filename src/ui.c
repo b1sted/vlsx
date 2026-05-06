@@ -9,7 +9,7 @@
 #include "input.h"
 #include "ui.h"
 
-void render_input_field(int x, int y, const InputField *field,
+void render_input_field(int x, int y, const input_field_t *field,
                         const char *placeholder) {
     bool has_input = field->len > 0;
 
@@ -18,8 +18,8 @@ void render_input_field(int x, int y, const InputField *field,
     tb_set_cursor(x + field->cursor, y);
 }
 
-void render_input_status(int x, int y, const InputField *field,
-                         const DFA *validator) {
+void render_input_status(int x, int y, const input_field_t *field,
+                         const dfa_t *validator) {
     if (field->len <= 0)
         return;
 

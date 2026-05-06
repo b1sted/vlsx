@@ -15,8 +15,8 @@ typedef struct {
     const int *transitions;
     const bool *is_final;
     int (*get_class)(char c);
-} DFA;
+} dfa_t;
 
-bool run_dfa(const DFA *dfa, const char *input);
+bool run_dfa(const dfa_t *dfa, const char *input);
 
 #endif /* DFA_H */

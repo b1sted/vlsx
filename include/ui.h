@@ -34,10 +34,10 @@
 #define COLOR_CHARCOAL 236
 #define COLOR_SILVER 248
 
-void render_input_field(int x, int y, const InputField *field,
+void render_input_field(int x, int y, const input_field_t *field,
                         const char *placeholder);
-void render_input_status(int x, int y, const InputField *field,
-                         const DFA *validator);
+void render_input_status(int x, int y, const input_field_t *field,
+                         const dfa_t *validator);
 void render_input_error(int x, int y, const char *error_msg);
 
 void render_section_title(int x, int y, const char *title);
