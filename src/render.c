@@ -178,7 +178,7 @@ static void render_tabbar(void) {
         break;
     case APP_SCR_IP:
         app.tabbar_items = tabbar_menu[0].count;
-        render_ip_tabbar(start_x, tabbar_y, tabbar_menu[0].items);
+        render_ip_tabbar(start_x, tabbar_y, tabbar_menu[0].items, tabbar_menu[0].count);
         break;
     }
 }
