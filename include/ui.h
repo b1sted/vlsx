@@ -3,9 +3,9 @@
 #ifndef UI_H
 #define UI_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
-#include "dfa.h"
 #include "input.h"
 
 #define ARROW_L 0x2192 /* → */
@@ -34,18 +34,17 @@
 #define COLOR_CHARCOAL 236
 #define COLOR_SILVER 248
 
-void render_input_field(int x, int y, const input_field_t *field,
-                        const char *placeholder);
-void render_input_status(int x, int y, const input_field_t *field,
-                         const dfa_t *validator);
 void render_input_error(int x, int y, const char *error_msg);
+void render_input_block(int x, int y, int width, const char *label,
+                        int post_colon_spacing, const input_field_t *field,
+                        const char *placeholder, bool (*validate)(const char *),
+                        bool is_active);
 
 void render_section_title(int x, int y, const char *title);
 void render_label_value_pair(int x, int y, int width, const char *label,
                              const char *value);
 void render_bin_number(int x, int y, uint8_t number);
 void render_bin_section(int x, int y, int width, const char *label,
-                        uint32_t first_octet, uint8_t second_octet,
-                        uint8_t third_octet, uint8_t fourth_octet);
+                        const uint8_t octets_arr[static 4]);
 
 #endif /* UI_H */
