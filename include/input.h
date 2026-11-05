@@ -10,6 +10,7 @@
 #define MINI_BUFFER 32
 #define TINY_BUFFER 16
 #define HEX_BUFFER 8
+#define MICRO_BUFFER 4
 
 #define V4_INPUT_MAX 19
 

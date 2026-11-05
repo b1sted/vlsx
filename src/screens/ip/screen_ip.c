@@ -48,13 +48,11 @@ void screen_ip_focus(void) {
         v4_focus_change();
         break;
     case IP_TAB_VLSM:
+        vlsm_focus_change();
         break;
     case IP_TAB_V6:
         break;
     }
-
-    app.input_cursor = 0;
-    app.current_focus = FOCUS_INPUT;
 }
 
 void screen_ip_confirm(void) {
@@ -63,10 +61,24 @@ void screen_ip_confirm(void) {
         v4_input_confirm();
         break;
     case IP_TAB_VLSM:
+        vlsm_input_confirm();
         break;
     case IP_TAB_V6:
         break;
     }
+}
+
+bool screen_ip_handle_event(struct tb_event *ev) {
+    switch (app.tabbar_cursor) {
+    case IP_TAB_V4:
+        return false;
+    case IP_TAB_VLSM:
+        return vlsm_handle_event(ev);
+    case IP_TAB_V6:
+        return false;
+    }
+
+    return false;
 }
 
 void render_ip_content(const int start_x, const int start_y) {
