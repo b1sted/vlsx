@@ -40,7 +40,7 @@ typedef struct {
 
     bool running;
     bool has_press_input;
-    bool is_input_result_valid;
+    bool is_input_correct;
 } app_state_t;
 
 typedef struct {

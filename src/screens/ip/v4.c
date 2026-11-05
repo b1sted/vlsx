@@ -307,7 +307,7 @@ static void ipv4_get_class(void) {
 }
 
 static void render_ipv4_information(const int start_x, const int start_y) {
-    if (!app.is_input_result_valid) {
+    if (!app.is_input_correct) {
         render_input_error(start_x, start_y + 1, ipv4_field->error_msg);
         return;
     }
@@ -369,16 +369,16 @@ void ipv4_input_confirm(void) {
         strncpy(ipv4_field->error_msg,
                 "Invalid input.\nPlease correct it and try again.",
                 sizeof(ipv4_field->error_msg));
-        app.is_input_result_valid = false;
+        app.is_input_correct = false;
         return;
     }
 
     if (!parse_ipv4(ipv4_field[0].buf)) {
-        app.is_input_result_valid = false;
+        app.is_input_correct = false;
         return;
     }
 
-    app.is_input_result_valid = true;
+    app.is_input_correct = true;
 
     parse_mask();
     calc_ipv4_network_address();
