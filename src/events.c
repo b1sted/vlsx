@@ -2,17 +2,18 @@
 
 #include <stdbool.h>
 
-#include "input.h"
 #include "termbox2.h"
 
 #include "app.h"
 #include "events.h"
+#include "input.h"
 
 #include "screens/ip/screen_ip.h"
 
 static void cursor_up(int *cursor);
 static void cursor_down(int *cursor, int *items_count);
 static void change_screen(void);
+static void change_subscreen(void);
 
 static void handle_sidebar_event(struct tb_event *ev);
 static void handle_tabbar_event(struct tb_event *ev);
@@ -40,6 +41,16 @@ static void change_screen(void) {
 
     app.current_focus = FOCUS_TABBAR;
     app.has_press_input = false;
+}
+
+static void change_subscreen(void) {
+    switch (app.current_screen) {
+    case APP_SCR_MAIN:
+        break;
+    case APP_SCR_IP:
+        screen_ip_focus();
+        break;
+    }
 }
 
 static void handle_sidebar_event(struct tb_event *ev) {
@@ -70,17 +81,16 @@ static void handle_tabbar_event(struct tb_event *ev) {
         break;
 
     case TB_KEY_ENTER:
-        switch (app.current_screen) {
-        case APP_SCR_MAIN:
-            break;
-        case APP_SCR_IP:
-            screen_ip_focus();
-            break;
-        }
+        app.input_cursor = 0;
+        app.current_focus = FOCUS_INPUT;
+        change_subscreen();
     }
 }
 
 static void handle_input_event(struct tb_event *ev) {
+    if (app.current_screen == APP_SCR_IP && screen_ip_handle_event(ev))
+        return;
+
     switch (ev->key) {
     case TB_KEY_ENTER:
         app.has_press_input = true;
@@ -108,6 +118,20 @@ static void handle_input_event(struct tb_event *ev) {
     case TB_KEY_ARROW_LEFT:
         if (app.active_field->cursor > 0)
             app.active_field->cursor--;
+        break;
+
+    case TB_KEY_ARROW_UP:
+        if (app.input_cursor > 0) {
+            app.input_cursor--;
+            change_subscreen();
+        }
+        break;
+
+    case TB_KEY_ARROW_DOWN:
+        if (app.input_cursor < app.input_count - 1) {
+            app.input_cursor++;
+            change_subscreen();
+        }
         break;
 
     case TB_KEY_CTRL_U:
