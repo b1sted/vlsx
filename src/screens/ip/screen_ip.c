@@ -11,10 +11,16 @@
 #include "screens/ip/v6.h"
 #include "screens/ip/vlsm.h"
 
+typedef enum {
+    IP_TAB_V4,
+    IP_TAB_VLSM,
+    IP_TAB_V6,
+} ip_tab_t;
+
 void render_ip_tabbar(const int start_x, const int tabbar_y,
-                      const char *tabbar_menu[]) {
+                      const char *tabbar_menu[], int count) {
     int menu_x = start_x;
-    for (int i = 0; tabbar_menu[i] != NULL; i++) {
+    for (int i = 0; i < count; i++) {
         int item_len = (int)strlen(tabbar_menu[i]);
 
         bool selected = (i == app.tabbar_cursor);
@@ -38,8 +44,12 @@ void render_ip_tabbar(const int start_x, const int tabbar_y,
 
 void screen_ip_focus(void) {
     switch (app.tabbar_cursor) {
-    case 0:
-        ipv4_focus_change();
+    case IP_TAB_V4:
+        v4_focus_change();
+        break;
+    case IP_TAB_VLSM:
+        break;
+    case IP_TAB_V6:
         break;
     }
 
@@ -49,22 +59,26 @@ void screen_ip_focus(void) {
 
 void screen_ip_confirm(void) {
     switch (app.tabbar_cursor) {
-    case 0:
-        ipv4_input_confirm();
+    case IP_TAB_V4:
+        v4_input_confirm();
+        break;
+    case IP_TAB_VLSM:
+        break;
+    case IP_TAB_V6:
         break;
     }
 }
 
 void render_ip_content(const int start_x, const int start_y) {
     switch (app.tabbar_cursor) {
-    case 0:
-        render_ipv4_content(start_x, start_y);
+    case IP_TAB_V4:
+        render_v4_content(start_x, start_y);
         break;
-    case 1:
+    case IP_TAB_VLSM:
         render_vlsm_content(start_x, start_y);
         break;
-    case 2:
-        render_ipv6_content(start_x, start_y);
+    case IP_TAB_V6:
+        render_v6_content(start_x, start_y);
         break;
     }
 }

@@ -25,7 +25,7 @@ app_state_t app = {
 
     .running = true,
     .has_press_input = false,
-    .is_input_result_valid = false,
+    .is_input_correct = false,
 };
 
 win_sizes_t sizes = {
