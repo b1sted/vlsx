@@ -206,8 +206,7 @@ bool sla_costs_calculate(const char *capex_text, const char *opex_text, sla_cost
     calc_status_clear(status);
 
     if (!sla_parse_cost_list(capex_text, &capex) || !sla_parse_cost_list(opex_text, &opex)) {
-        calc_status_fail(status, CALC_ERR_SYNTAX,
-                         "Invalid cost list. Use comma-separated positive numbers.");
+        calc_status_fail(status, CALC_ERR_SYNTAX, "Invalid cost list. Use positive numbers.");
         return false;
     }
 
