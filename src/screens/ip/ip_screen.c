@@ -6,6 +6,7 @@
 #include <stddef.h>
 
 #include "screens/ip/ipv4_screen.h"
+#include "screens/ip/ipv6_screen.h"
 #include "screens/ip/vlsm_screen.h"
 
 void ip_screen_init(ip_screen_t *screen)
@@ -16,6 +17,7 @@ void ip_screen_init(ip_screen_t *screen)
 
     screen->active_tab = IP_TAB_V4;
     ipv4_screen_init(&screen->ipv4);
+    ipv6_screen_init(&screen->ipv6);
     vlsm_screen_init(&screen->vlsm);
 }
 
@@ -60,6 +62,7 @@ void ip_screen_confirm(ip_screen_t *screen)
         vlsm_screen_confirm(&screen->vlsm);
         break;
     case IP_TAB_V6:
+        ipv6_screen_confirm(&screen->ipv6);
         break;
     case IP_TAB_COUNT:
         break;
@@ -78,7 +81,7 @@ bool ip_screen_handle(ip_screen_t *screen, const ui_event_t *event)
     case IP_TAB_VLSM:
         return vlsm_screen_handle(&screen->vlsm, event);
     case IP_TAB_V6:
-        return false;
+        return ipv6_screen_handle(&screen->ipv6, event);
     case IP_TAB_COUNT:
         return false;
     }

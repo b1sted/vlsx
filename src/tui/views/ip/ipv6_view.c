@@ -2,9 +2,71 @@
 
 #include "tui/views/ip/ipv6_view.h"
 
-#include "tui/layout.h"
+#include <stdbool.h>
+#include <stdio.h>
 
-void ipv6_view_render(const layout_t *layout)
+#include "common/limits.h"
+#include "core/net/ipv6/ipv6_class.h"
+#include "core/net/ipv6/ipv6_types.h"
+#include "core/net/ipv6/ipv6_validate.h"
+#include "screens/ip/ipv6_screen.h"
+#include "tui/layout.h"
+#include "tui/primitives.h"
+
+#define IPV6_LABEL_WIDTH 15
+#define IPV6_INPUT_WIDTH (V6_INPUT_MAX - 1)
+
+static void ipv6_view_render_information(const ipv6_screen_t *screen, const layout_t *layout);
+
+static void ipv6_view_render_information(const ipv6_screen_t *screen, const layout_t *layout)
 {
-    (void)layout;
+    const int start_x = layout->content_x;
+    const int start_y = layout->content_y;
+
+    if (!screen->is_valid) {
+        ui_render_input_error(start_x, start_y + 1, screen->status.message);
+        return;
+    }
+
+    char prefix[TINY_BUFFER];
+
+    snprintf(prefix, sizeof(prefix), "/%u", (unsigned int)screen->result.prefix);
+
+    ui_render_section_title(start_x, start_y + 2, "[ FORMATTING & COMPRESSION ]");
+    ui_render_label_value_pair(start_x, start_y + 3, IPV6_LABEL_WIDTH,
+                               "Original:", screen->result.original);
+    ui_render_label_value_pair(start_x, start_y + 4, IPV6_LABEL_WIDTH,
+                               "No L-Zeros:", screen->result.no_leading_zeros);
+    ui_render_label_value_pair(start_x, start_y + 5, IPV6_LABEL_WIDTH,
+                               "Compressed:", screen->result.compressed);
+    ui_render_label_value_pair(start_x, start_y + 6, IPV6_LABEL_WIDTH,
+                               "Expanded:", screen->result.expanded);
+
+    const char *interface_id =
+        (screen->result.prefix == 128) ? "N/A (/128)" : screen->result.interface_id_text;
+
+    ui_render_section_title(start_x, start_y + 8, "[ NETWORK INFORMATION ]");
+    ui_render_label_value_pair(start_x, start_y + 9, IPV6_LABEL_WIDTH, "Prefix Length:", prefix);
+    ui_render_label_value_pair(start_x, start_y + 10, IPV6_LABEL_WIDTH,
+                               "Network Prefix:", screen->result.network_text);
+    ui_render_label_value_pair(start_x, start_y + 11, IPV6_LABEL_WIDTH,
+                               "Interface ID:", interface_id);
+    ui_render_label_value_pair(start_x, start_y + 12, IPV6_LABEL_WIDTH,
+                               "Address Type:", ipv6_type_name(screen->result.type));
+}
+
+void ipv6_view_render(const ipv6_screen_t *screen, const layout_t *layout)
+{
+    if (screen == NULL || layout == NULL) {
+        return;
+    }
+
+    ui_render_input_block(layout->content_x, layout->content_y, IPV6_INPUT_WIDTH, "IP:", 1,
+                          &screen->input, "fe80::a00:27:fea8:3ebd/64", ipv6_validate, true);
+
+    if (!screen->has_result) {
+        return;
+    }
+
+    ipv6_view_render_information(screen, layout);
 }

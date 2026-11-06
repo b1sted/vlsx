@@ -8,6 +8,7 @@
 
 #include "common/ui_event.h"
 #include "screens/ip/ipv4_screen.h"
+#include "screens/ip/ipv6_screen.h"
 #include "screens/ip/vlsm_screen.h"
 
 typedef enum {
@@ -20,6 +21,7 @@ typedef enum {
 typedef struct {
     ip_tab_t active_tab;
     ipv4_screen_t ipv4;
+    ipv6_screen_t ipv6;
     vlsm_screen_t vlsm;
 } ip_screen_t;
 

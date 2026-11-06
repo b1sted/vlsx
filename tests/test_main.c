@@ -5,6 +5,7 @@
 #include "test_runner.h"
 
 void test_ipv4(void);
+void test_ipv6(void);
 void test_vlsm(void);
 void test_hosts_list(void);
 void test_dfa(void);
@@ -14,6 +15,7 @@ int tests_failed = 0;
 int main(void)
 {
     test_ipv4();
+    test_ipv6();
     test_vlsm();
     test_hosts_list();
     test_dfa();

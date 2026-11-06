@@ -11,5 +11,6 @@
 #define MICRO_BUFFER 4
 
 #define V4_INPUT_MAX 19
+#define V6_INPUT_MAX 50
 
 #endif /* VLSX_COMMON_LIMITS_H */

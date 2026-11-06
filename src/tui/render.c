@@ -35,7 +35,7 @@ static void render_content(const layout_t *layout)
             vlsm_view_render(&app.ip_screen.vlsm, layout);
             break;
         case IP_TAB_V6:
-            ipv6_view_render(layout);
+            ipv6_view_render(&app.ip_screen.ipv6, layout);
             break;
         case IP_TAB_COUNT:
             break;
