@@ -84,6 +84,7 @@ bool ipv4_screen_handle(ipv4_screen_t *screen, const ui_event_t *event)
     case UI_EVENT_NONE:
     case UI_EVENT_RESIZE:
     case UI_EVENT_KEY_ESC:
+    case UI_EVENT_KEY_TAB:
         return false;
     }
 

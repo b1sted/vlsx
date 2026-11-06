@@ -31,6 +31,7 @@ typedef struct {
 
     int sidebar_cursor;
     int tabbar_cursor;
+    int mac_tabbar_cursor;
 
     bool running;
 

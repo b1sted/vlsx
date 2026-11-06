@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 
-#include "tui/views/l2/mac_view.h"
+#include "tui/views/l2/mac_converter_view.h"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -10,7 +10,7 @@
 #include "common/limits.h"
 #include "core/net/mac/mac_calc.h"
 #include "core/net/mac/mac_parse.h"
-#include "screens/l2/mac_screen.h"
+#include "screens/l2/mac_converter_screen.h"
 #include "tui/layout.h"
 #include "tui/primitives.h"
 
@@ -24,10 +24,11 @@
 #define MAC_BINARY_LINE_LENGTH (MAC_BINARY_BITS_PER_LINE + MAC_BINARY_OCTETS_PER_LINE - 1)
 #define MAC_BINARY_LINE_TEXT_MAX (MAC_BINARY_LINE_LENGTH + 1)
 
-static void mac_view_render_information(const mac_screen_t *screen, const layout_t *layout);
-static void mac_view_render_binary(int x, int y, const char *binary);
+static void mac_converter_view_render_information(const mac_converter_screen_t *screen,
+                                                  const layout_t *layout);
+static void mac_converter_view_render_binary(int x, int y, const char *binary);
 
-static void mac_view_render_binary(int x, int y, const char *binary)
+static void mac_converter_view_render_binary(int x, int y, const char *binary)
 {
     if (binary == NULL) {
         return;
@@ -48,7 +49,8 @@ static void mac_view_render_binary(int x, int y, const char *binary)
     ui_render_label_value_pair(x, y + 1, MAC_LABEL_WIDTH, "", second_line);
 }
 
-static void mac_view_render_information(const mac_screen_t *screen, const layout_t *layout)
+static void mac_converter_view_render_information(const mac_converter_screen_t *screen,
+                                                  const layout_t *layout)
 {
     const int start_x = layout->content_x;
     const int start_y = layout->content_y;
@@ -85,10 +87,10 @@ static void mac_view_render_information(const mac_screen_t *screen, const layout
                                "Linux/Windows:", screen->result.colon);
     ui_render_label_value_pair(start_x, start_y + 12, MAC_LABEL_WIDTH,
                                "Cisco:", screen->result.cisco);
-    mac_view_render_binary(start_x, start_y + 13, screen->result.binary);
+    mac_converter_view_render_binary(start_x, start_y + 13, screen->result.binary);
 }
 
-void mac_view_render(const mac_screen_t *screen, const layout_t *layout)
+void mac_converter_view_render(const mac_converter_screen_t *screen, const layout_t *layout)
 {
     if (screen == NULL || layout == NULL) {
         return;
@@ -111,5 +113,5 @@ void mac_view_render(const mac_screen_t *screen, const layout_t *layout)
         return;
     }
 
-    mac_view_render_information(screen, layout);
+    mac_converter_view_render_information(screen, layout);
 }

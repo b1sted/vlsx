@@ -14,3 +14,8 @@ const char *const app_menu_ip_tab_items[APP_MENU_IP_TAB_COUNT] = {
     "VLSM",
     "IPv6",
 };
+
+const char *const app_menu_mac_tab_items[APP_MENU_MAC_TAB_COUNT] = {
+    "Converter",
+    "Multicast MAC",
+};
