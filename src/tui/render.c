@@ -8,12 +8,15 @@
 #include "termbox2.h"
 
 #include "app/app.h"
+#include "screens/dhcp/dhcp_screen.h"
 #include "screens/ip/ip_screen.h"
 #include "screens/metrics/metrics_screen.h"
 #include "tui/backend.h"
 #include "tui/chrome.h"
 #include "tui/layout.h"
 #include "tui/theme.h"
+#include "tui/views/dhcp/dhcp_tabbar.h"
+#include "tui/views/dhcp/dhcpv4_view.h"
 #include "tui/views/ip/ip_tabbar.h"
 #include "tui/views/ip/ipv4_view.h"
 #include "tui/views/ip/ipv6_view.h"
@@ -76,6 +79,15 @@ static void render_content(const layout_t *layout)
             break;
         }
         break;
+    case APP_SCR_DHCP:
+        switch (dhcp_screen_active_tab(&app.dhcp_screen)) {
+        case DHCP_TAB_V4:
+            dhcpv4_view_render(&app.dhcp_screen.v4, layout);
+            break;
+        case DHCP_TAB_COUNT:
+            break;
+        }
+        break;
     }
 }
 
@@ -122,6 +134,8 @@ void render_frame(void)
         mac_tabbar_render(&app, &layout);
     } else if (app.current_screen == APP_SCR_METRICS) {
         metrics_tabbar_render(&app, &layout);
+    } else if (app.current_screen == APP_SCR_DHCP) {
+        dhcp_tabbar_render(&app, &layout);
     }
 
     render_content(&layout);

@@ -10,6 +10,7 @@
 #include "app/menus.h"
 #include "app/router.h"
 #include "common/ui_event.h"
+#include "screens/dhcp/dhcp_screen.h"
 #include "screens/ip/ip_screen.h"
 #include "screens/l2/mac_screen.h"
 #include "screens/metrics/metrics_screen.h"
@@ -52,6 +53,10 @@ static int *active_tab_cursor(void)
         return &app.metrics_tabbar_cursor;
     }
 
+    if (app.current_screen == APP_SCR_DHCP) {
+        return &app.dhcp_tabbar_cursor;
+    }
+
     return NULL;
 }
 
@@ -69,6 +74,10 @@ static int active_tab_count(void)
         return (int)METRICS_TAB_COUNT;
     }
 
+    if (app.current_screen == APP_SCR_DHCP) {
+        return (int)DHCP_TAB_COUNT;
+    }
+
     return 0;
 }
 
@@ -80,6 +89,8 @@ static void sync_active_tab(void)
         app_router_sync_mac_tab(&app);
     } else if (app.current_screen == APP_SCR_METRICS) {
         app_router_sync_metrics_tab(&app);
+    } else if (app.current_screen == APP_SCR_DHCP) {
+        app_router_sync_dhcp_tab(&app);
     }
 }
 
@@ -159,6 +170,8 @@ static void handle_input_event(const ui_event_t *event)
         mac_screen_handle(&app.mac_screen, event);
     } else if (app.current_screen == APP_SCR_METRICS) {
         metrics_screen_handle(&app.metrics_screen, event);
+    } else if (app.current_screen == APP_SCR_DHCP) {
+        dhcp_screen_handle(&app.dhcp_screen, event);
     }
 }
 

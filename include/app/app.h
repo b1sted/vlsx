@@ -5,6 +5,7 @@
 
 #include <stdbool.h>
 
+#include "screens/dhcp/dhcp_screen.h"
 #include "screens/ip/ip_screen.h"
 #include "screens/l2/mac_screen.h"
 #include "screens/metrics/metrics_screen.h"
@@ -22,6 +23,7 @@ typedef enum {
     APP_SCR_IP,
     APP_SCR_MAC,
     APP_SCR_METRICS,
+    APP_SCR_DHCP,
 } screens_t;
 
 typedef struct {
@@ -35,12 +37,14 @@ typedef struct {
     int tabbar_cursor;
     int mac_tabbar_cursor;
     int metrics_tabbar_cursor;
+    int dhcp_tabbar_cursor;
 
     bool running;
 
     ip_screen_t ip_screen;
     mac_screen_t mac_screen;
     metrics_screen_t metrics_screen;
+    dhcp_screen_t dhcp_screen;
 } app_state_t;
 
 extern app_state_t app;

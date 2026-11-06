@@ -15,5 +15,6 @@
 #define MAC_INPUT_MAX 18
 #define SLA_INPUT_MAX 16
 #define SLA_COST_INPUT_MAX 32
+#define DHCP_LEASE_INPUT_MAX 12
 
 #endif /* VLSX_COMMON_LIMITS_H */
