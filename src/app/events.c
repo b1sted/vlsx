@@ -10,6 +10,7 @@
 #include "app/router.h"
 #include "common/ui_event.h"
 #include "screens/ip/ip_screen.h"
+#include "screens/l2/mac_screen.h"
 
 static void cursor_up(int *cursor);
 static void cursor_down(int *cursor, int item_count);
@@ -73,6 +74,8 @@ static void handle_input_event(const ui_event_t *event)
 {
     if (app.current_screen == APP_SCR_IP) {
         ip_screen_handle(&app.ip_screen, event);
+    } else if (app.current_screen == APP_SCR_MAC) {
+        mac_screen_handle(&app.mac_screen, event);
     }
 }
 
@@ -94,6 +97,12 @@ void app_handle_event(const ui_event_t *event)
         }
 
         if (app.current_focus == FOCUS_INPUT) {
+            if (app.current_screen == APP_SCR_MAC) {
+                app.current_screen = app.previous_screen;
+                app.current_focus = FOCUS_SIDEBAR;
+                return;
+            }
+
             app.current_focus = FOCUS_TABBAR;
             return;
         }

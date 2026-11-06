@@ -17,6 +17,7 @@
 #include "tui/views/ip/ipv4_view.h"
 #include "tui/views/ip/ipv6_view.h"
 #include "tui/views/ip/vlsm_view.h"
+#include "tui/views/l2/mac_view.h"
 
 static void render_content(const layout_t *layout);
 static void render_too_small(int width, int height);
@@ -40,6 +41,9 @@ static void render_content(const layout_t *layout)
         case IP_TAB_COUNT:
             break;
         }
+        break;
+    case APP_SCR_MAC:
+        mac_view_render(&app.mac_screen, layout);
         break;
     }
 }
