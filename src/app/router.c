@@ -31,11 +31,15 @@ void app_router_change_screen(app_state_t *state)
 
     if (state->sidebar_cursor == 0) {
         state->current_screen = APP_SCR_IP;
+        app_router_sync_tab(state);
+        state->current_focus = FOCUS_TABBAR;
+        return;
     }
 
-    app_router_sync_tab(state);
-
-    state->current_focus = FOCUS_TABBAR;
+    if (state->sidebar_cursor == 1) {
+        state->current_screen = APP_SCR_MAC;
+        state->current_focus = FOCUS_INPUT;
+    }
 }
 
 void app_router_change_subscreen(app_state_t *state)
@@ -50,6 +54,8 @@ void app_router_change_subscreen(app_state_t *state)
     case APP_SCR_IP:
         app_router_sync_tab(state);
         ip_screen_focus(&state->ip_screen);
+        break;
+    case APP_SCR_MAC:
         break;
     }
 }

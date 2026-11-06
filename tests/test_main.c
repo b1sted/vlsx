@@ -6,6 +6,7 @@
 
 void test_ipv4(void);
 void test_ipv6(void);
+void test_mac(void);
 void test_vlsm(void);
 void test_hosts_list(void);
 void test_dfa(void);
@@ -16,6 +17,7 @@ int main(void)
 {
     test_ipv4();
     test_ipv6();
+    test_mac();
     test_vlsm();
     test_hosts_list();
     test_dfa();

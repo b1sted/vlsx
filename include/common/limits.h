@@ -12,5 +12,6 @@
 
 #define V4_INPUT_MAX 19
 #define V6_INPUT_MAX 50
+#define MAC_INPUT_MAX 18
 
 #endif /* VLSX_COMMON_LIMITS_H */

@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 #include "screens/ip/ip_screen.h"
+#include "screens/l2/mac_screen.h"
 
 #define APP_VERSION "v0.1-alpha"
 
@@ -18,6 +19,7 @@ typedef enum {
 typedef enum {
     APP_SCR_MAIN,
     APP_SCR_IP,
+    APP_SCR_MAC,
 } screens_t;
 
 typedef struct {
@@ -33,6 +35,7 @@ typedef struct {
     bool running;
 
     ip_screen_t ip_screen;
+    mac_screen_t mac_screen;
 } app_state_t;
 
 extern app_state_t app;
