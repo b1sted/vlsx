@@ -9,6 +9,8 @@
 #include "common/input_field.h"
 
 void ui_render_input_error(int x, int y, const char *error_msg);
+void ui_render_input_status(int x, int y, const input_field_t *field,
+                            bool (*validate)(const char *));
 void ui_render_input_block(int x, int y, int width, const char *label, int post_colon_spacing,
                            const input_field_t *field, const char *placeholder,
                            bool (*validate)(const char *), bool is_active);

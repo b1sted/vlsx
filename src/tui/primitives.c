@@ -13,8 +13,6 @@
 
 static void render_input_field(int x, int y, const input_field_t *field, const char *placeholder,
                                bool is_active);
-static void render_input_status(int x, int y, const input_field_t *field,
-                                bool (*validate)(const char *));
 
 static void render_input_field(int x, int y, const input_field_t *field, const char *placeholder,
                                bool is_active)
@@ -36,8 +34,8 @@ static void render_input_field(int x, int y, const input_field_t *field, const c
     }
 }
 
-static void render_input_status(int x, int y, const input_field_t *field,
-                                bool (*validate)(const char *))
+void ui_render_input_status(int x, int y, const input_field_t *field,
+                            bool (*validate)(const char *))
 {
     if (field == NULL || validate == NULL || field->len <= 0) {
         return;
@@ -63,7 +61,7 @@ void ui_render_input_block(int x, int y, int width, const char *label, int post_
     const int input_x = x + label_len + post_colon_spacing;
 
     render_input_field(input_x, y, field, placeholder, is_active);
-    render_input_status(input_x + width, y, field, validate);
+    ui_render_input_status(input_x + width, y, field, validate);
 }
 
 void ui_render_input_error(int x, int y, const char *error_msg)
