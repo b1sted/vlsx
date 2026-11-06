@@ -77,13 +77,13 @@ static void ipv4_view_render_information(const ipv4_screen_t *screen, const layo
     ipv4_format_addr(&screen->result.last_host, last_host, sizeof(last_host));
     snprintf(host_count, sizeof(host_count), "%" PRIu32, screen->result.host_count);
 
-    ui_render_section_title(start_x, start_y + 1, "[ NETWORK INFORMATION ]");
-    ui_render_label_value_pair(start_x, start_y + 2, V4_INPUT_MAX, "IP Address:", address);
-    ui_render_label_value_pair(start_x, start_y + 3, V4_INPUT_MAX, "Subnet Mask:", mask);
-    ui_render_label_value_pair(start_x, start_y + 4, V4_INPUT_MAX, "Network Address:",
+    ui_render_section_title(start_x, start_y + 2, "[ NETWORK INFORMATION ]");
+    ui_render_label_value_pair(start_x, start_y + 3, V4_INPUT_MAX, "IP Address:", address);
+    ui_render_label_value_pair(start_x, start_y + 4, V4_INPUT_MAX, "Subnet Mask:", mask);
+    ui_render_label_value_pair(start_x, start_y + 5, V4_INPUT_MAX, "Network Address:",
                                ipv4_view_network_text(&screen->result, network, sizeof(network)));
     ui_render_label_value_pair(
-        start_x, start_y + 5, V4_INPUT_MAX, "Broadcast Address:",
+        start_x, start_y + 6, V4_INPUT_MAX, "Broadcast Address:",
         ipv4_view_broadcast_text(&screen->result, broadcast, sizeof(broadcast)));
 
     const int needed_x =
@@ -93,7 +93,7 @@ static void ipv4_view_render_information(const ipv4_screen_t *screen, const layo
 
     const int range_section_x =
         enough_size ? start_x + IPV4_INFO_SECTION_MAX + IPV4_HORIZONTAL_PADDING : start_x;
-    const int range_section_y = enough_size ? start_y + 1 : start_y + 7;
+    const int range_section_y = enough_size ? start_y + 2 : start_y + 8;
     const int range_section_width = enough_size ? IPV4_RANGE_TITLE_WIDTH : V4_INPUT_MAX;
 
     ui_render_section_title(range_section_x, range_section_y, "[ RANGE OF NODES ]");
@@ -106,7 +106,7 @@ static void ipv4_view_render_information(const ipv4_screen_t *screen, const layo
     ui_render_label_value_pair(range_section_x, range_section_y + 4, range_section_width,
                                "Class:", ipv4_class_name(screen->result.class));
 
-    const int binary_section_y = enough_size ? start_y + 7 : range_section_y + 6;
+    const int binary_section_y = enough_size ? start_y + 8 : range_section_y + 6;
 
     ui_render_section_title(start_x, binary_section_y, "[ BINARY FORM ]");
     ui_render_bin_section(start_x, binary_section_y + 1, V4_INPUT_MAX,
