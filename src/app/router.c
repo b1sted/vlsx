@@ -5,6 +5,7 @@
 #include <stddef.h>
 
 #include "app/app.h"
+#include "screens/dhcp/dhcp_screen.h"
 #include "screens/ip/ip_screen.h"
 #include "screens/l2/mac_screen.h"
 #include "screens/metrics/metrics_screen.h"
@@ -49,6 +50,19 @@ void app_router_sync_metrics_tab(app_state_t *state)
     metrics_screen_set_tab(&state->metrics_screen, (size_t)state->metrics_tabbar_cursor);
 }
 
+void app_router_sync_dhcp_tab(app_state_t *state)
+{
+    if (state == NULL) {
+        return;
+    }
+
+    if (state->dhcp_tabbar_cursor < 0 || state->dhcp_tabbar_cursor >= (int)DHCP_TAB_COUNT) {
+        state->dhcp_tabbar_cursor = 0;
+    }
+
+    dhcp_screen_set_tab(&state->dhcp_screen, (size_t)state->dhcp_tabbar_cursor);
+}
+
 void app_router_change_screen(app_state_t *state)
 {
     if (state == NULL) {
@@ -76,6 +90,13 @@ void app_router_change_screen(app_state_t *state)
         state->current_screen = APP_SCR_METRICS;
         app_router_sync_metrics_tab(state);
         state->current_focus = FOCUS_TABBAR;
+        return;
+    }
+
+    if (state->sidebar_cursor == 3) {
+        state->current_screen = APP_SCR_DHCP;
+        app_router_sync_dhcp_tab(state);
+        state->current_focus = FOCUS_TABBAR;
     }
 }
 
@@ -99,6 +120,10 @@ void app_router_change_subscreen(app_state_t *state)
     case APP_SCR_METRICS:
         app_router_sync_metrics_tab(state);
         metrics_screen_focus(&state->metrics_screen);
+        break;
+    case APP_SCR_DHCP:
+        app_router_sync_dhcp_tab(state);
+        dhcp_screen_focus(&state->dhcp_screen);
         break;
     }
 }

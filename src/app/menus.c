@@ -25,3 +25,7 @@ const char *const app_menu_metrics_tab_items[APP_MENU_METRICS_TAB_COUNT] = {
     "Goodput",
     "Costs",
 };
+
+const char *const app_menu_dhcp_tab_items[APP_MENU_DHCP_TAB_COUNT] = {
+    "DHCPv4",
+};

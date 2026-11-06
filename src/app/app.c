@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "screens/dhcp/dhcp_screen.h"
 #include "screens/ip/ip_screen.h"
 #include "screens/l2/mac_screen.h"
 #include "screens/metrics/metrics_screen.h"
@@ -33,4 +34,5 @@ void app_init(void)
     ip_screen_init(&app.ip_screen);
     mac_screen_init(&app.mac_screen);
     metrics_screen_init(&app.metrics_screen);
+    dhcp_screen_init(&app.dhcp_screen);
 }
