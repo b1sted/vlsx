@@ -44,6 +44,9 @@ static void map_event(const struct tb_event *source, ui_event_t *dest)
     case TB_KEY_ESC:
         dest->kind = UI_EVENT_KEY_ESC;
         return;
+    case TB_KEY_TAB:
+        dest->kind = UI_EVENT_KEY_TAB;
+        return;
     case TB_KEY_BACKSPACE:
     case TB_KEY_BACKSPACE2:
         dest->kind = UI_EVENT_KEY_BACKSPACE;

@@ -15,6 +15,7 @@ app_state_t app = {
     .previous_screen = APP_SCR_MAIN,
     .sidebar_cursor = 0,
     .tabbar_cursor = 0,
+    .mac_tabbar_cursor = 0,
     .running = true,
 };
 

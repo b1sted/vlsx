@@ -3,13 +3,10 @@
 #include "screens/l2/mac_screen.h"
 
 #include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
+#include <stddef.h>
 
-#include "common/input_field.h"
-#include "common/result.h"
-#include "core/net/mac/mac_calc.h"
-#include "core/net/mac/mac_parse.h"
+#include "screens/l2/mac_converter_screen.h"
+#include "screens/l2/mac_multicast_screen.h"
 
 void mac_screen_init(mac_screen_t *screen)
 {
@@ -17,9 +14,32 @@ void mac_screen_init(mac_screen_t *screen)
         return;
     }
 
-    memset(screen, 0, sizeof(*screen));
-    input_field_init(&screen->input, screen->buf, sizeof(screen->buf));
-    calc_status_clear(&screen->status);
+    screen->active_tab = MAC_TAB_CONVERTER;
+    mac_converter_screen_init(&screen->converter);
+    mac_multicast_screen_init(&screen->multicast);
+}
+
+void mac_screen_set_tab(mac_screen_t *screen, size_t tab_index)
+{
+    if (screen == NULL || tab_index >= (size_t)MAC_TAB_COUNT) {
+        return;
+    }
+
+    screen->active_tab = (mac_tab_t)tab_index;
+}
+
+mac_tab_t mac_screen_active_tab(const mac_screen_t *screen)
+{
+    if (screen == NULL) {
+        return MAC_TAB_CONVERTER;
+    }
+
+    return screen->active_tab;
+}
+
+void mac_screen_focus(mac_screen_t *screen)
+{
+    (void)screen;
 }
 
 void mac_screen_confirm(mac_screen_t *screen)
@@ -28,21 +48,16 @@ void mac_screen_confirm(mac_screen_t *screen)
         return;
     }
 
-    screen->has_result = true;
-    screen->is_valid = false;
-    memset(&screen->result, 0, sizeof(screen->result));
-    calc_status_clear(&screen->status);
-
-    screen->is_valid = mac_calculate(screen->input.buf, &screen->result, &screen->status);
-}
-
-const input_field_t *mac_screen_active_input(const mac_screen_t *screen)
-{
-    if (screen == NULL) {
-        return NULL;
+    switch (screen->active_tab) {
+    case MAC_TAB_CONVERTER:
+        mac_converter_screen_confirm(&screen->converter);
+        break;
+    case MAC_TAB_MULTICAST:
+        mac_multicast_screen_confirm(&screen->multicast);
+        break;
+    case MAC_TAB_COUNT:
+        break;
     }
-
-    return &screen->input;
 }
 
 bool mac_screen_handle(mac_screen_t *screen, const ui_event_t *event)
@@ -51,39 +66,12 @@ bool mac_screen_handle(mac_screen_t *screen, const ui_event_t *event)
         return false;
     }
 
-    switch (event->kind) {
-    case UI_EVENT_KEY_ENTER:
-        mac_screen_confirm(screen);
-        return true;
-    case UI_EVENT_KEY_BACKSPACE:
-        input_backspace(&screen->input);
-        return true;
-    case UI_EVENT_KEY_LEFT:
-        input_cursor_left(&screen->input);
-        return true;
-    case UI_EVENT_KEY_RIGHT:
-        input_cursor_right(&screen->input);
-        return true;
-    case UI_EVENT_KEY_UP:
-    case UI_EVENT_KEY_DOWN:
-        return true;
-    case UI_EVENT_KEY_CTRL:
-        if (event->ctrl == 'u') {
-            input_field_clear(&screen->input);
-        } else if (event->ctrl == 'a') {
-            input_cursor_home(&screen->input);
-        } else if (event->ctrl == 'e') {
-            input_cursor_end(&screen->input);
-        }
-        return true;
-    case UI_EVENT_KEY_CHAR:
-        if (event->ch > 0 && event->ch <= UINT32_C(0x7F)) {
-            input_insert(&screen->input, (char)event->ch, mac_accept);
-        }
-        return true;
-    case UI_EVENT_NONE:
-    case UI_EVENT_RESIZE:
-    case UI_EVENT_KEY_ESC:
+    switch (screen->active_tab) {
+    case MAC_TAB_CONVERTER:
+        return mac_converter_screen_handle(&screen->converter, event);
+    case MAC_TAB_MULTICAST:
+        return mac_multicast_screen_handle(&screen->multicast, event);
+    case MAC_TAB_COUNT:
         return false;
     }
 

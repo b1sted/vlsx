@@ -17,7 +17,9 @@
 #include "tui/views/ip/ipv4_view.h"
 #include "tui/views/ip/ipv6_view.h"
 #include "tui/views/ip/vlsm_view.h"
-#include "tui/views/l2/mac_view.h"
+#include "tui/views/l2/mac_converter_view.h"
+#include "tui/views/l2/mac_multicast_view.h"
+#include "tui/views/l2/mac_tabbar.h"
 
 static void render_content(const layout_t *layout);
 static void render_too_small(int width, int height);
@@ -43,7 +45,16 @@ static void render_content(const layout_t *layout)
         }
         break;
     case APP_SCR_MAC:
-        mac_view_render(&app.mac_screen, layout);
+        switch (mac_screen_active_tab(&app.mac_screen)) {
+        case MAC_TAB_CONVERTER:
+            mac_converter_view_render(&app.mac_screen.converter, layout);
+            break;
+        case MAC_TAB_MULTICAST:
+            mac_multicast_view_render(&app.mac_screen.multicast, layout);
+            break;
+        case MAC_TAB_COUNT:
+            break;
+        }
         break;
     }
 }
@@ -87,6 +98,8 @@ void render_frame(void)
 
     if (app.current_screen == APP_SCR_IP) {
         ip_tabbar_render(&app, &layout);
+    } else if (app.current_screen == APP_SCR_MAC) {
+        mac_tabbar_render(&app, &layout);
     }
 
     render_content(&layout);

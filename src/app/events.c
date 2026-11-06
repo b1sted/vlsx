@@ -3,6 +3,7 @@
 #include "app/events.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #include "app/app.h"
@@ -14,6 +15,10 @@
 
 static void cursor_up(int *cursor);
 static void cursor_down(int *cursor, int item_count);
+static int *active_tab_cursor(void);
+static int active_tab_count(void);
+static void sync_active_tab(void);
+static void cycle_active_tab(void);
 static void handle_sidebar_event(const ui_event_t *event);
 static void handle_tabbar_event(const ui_event_t *event);
 static void handle_input_event(const ui_event_t *event);
@@ -30,6 +35,54 @@ static void cursor_down(int *cursor, int item_count)
     if (cursor != NULL && item_count > 0 && *cursor < item_count - 1) {
         (*cursor)++;
     }
+}
+
+static int *active_tab_cursor(void)
+{
+    if (app.current_screen == APP_SCR_IP) {
+        return &app.tabbar_cursor;
+    }
+
+    if (app.current_screen == APP_SCR_MAC) {
+        return &app.mac_tabbar_cursor;
+    }
+
+    return NULL;
+}
+
+static int active_tab_count(void)
+{
+    if (app.current_screen == APP_SCR_IP) {
+        return (int)IP_TAB_COUNT;
+    }
+
+    if (app.current_screen == APP_SCR_MAC) {
+        return (int)MAC_TAB_COUNT;
+    }
+
+    return 0;
+}
+
+static void sync_active_tab(void)
+{
+    if (app.current_screen == APP_SCR_IP) {
+        app_router_sync_tab(&app);
+    } else if (app.current_screen == APP_SCR_MAC) {
+        app_router_sync_mac_tab(&app);
+    }
+}
+
+static void cycle_active_tab(void)
+{
+    int *cursor = active_tab_cursor();
+    const int tab_count = active_tab_count();
+
+    if (cursor == NULL || tab_count <= 0) {
+        return;
+    }
+
+    *cursor = (*cursor + 1) % tab_count;
+    sync_active_tab();
 }
 
 static void handle_sidebar_event(const ui_event_t *event)
@@ -52,18 +105,35 @@ static void handle_sidebar_event(const ui_event_t *event)
 
 static void handle_tabbar_event(const ui_event_t *event)
 {
+    int *cursor = active_tab_cursor();
+    const int tab_count = active_tab_count();
+
+    if (cursor == NULL || tab_count <= 0) {
+        return;
+    }
+
     switch (event->kind) {
     case UI_EVENT_KEY_RIGHT:
-        cursor_down(&app.tabbar_cursor, APP_MENU_IP_TAB_COUNT);
-        app_router_sync_tab(&app);
+        cursor_down(cursor, tab_count);
+        sync_active_tab();
         break;
     case UI_EVENT_KEY_LEFT:
-        cursor_up(&app.tabbar_cursor);
-        app_router_sync_tab(&app);
+        cursor_up(cursor);
+        sync_active_tab();
         break;
     case UI_EVENT_KEY_ENTER:
         app.current_focus = FOCUS_INPUT;
         app_router_change_subscreen(&app);
+        break;
+    case UI_EVENT_KEY_CHAR:
+        if (event->ch >= (uint32_t)'1' && event->ch <= (uint32_t)'9') {
+            const int tab_index = (int)(event->ch - (uint32_t)'1');
+
+            if (tab_index < tab_count) {
+                *cursor = tab_index;
+                sync_active_tab();
+            }
+        }
         break;
     default:
         break;
@@ -90,6 +160,11 @@ void app_handle_event(const ui_event_t *event)
         return;
     }
 
+    if (event->kind == UI_EVENT_KEY_TAB) {
+        cycle_active_tab();
+        return;
+    }
+
     if (event->kind == UI_EVENT_KEY_ESC) {
         if (app.current_screen == APP_SCR_MAIN) {
             app.running = false;
@@ -97,12 +172,6 @@ void app_handle_event(const ui_event_t *event)
         }
 
         if (app.current_focus == FOCUS_INPUT) {
-            if (app.current_screen == APP_SCR_MAC) {
-                app.current_screen = app.previous_screen;
-                app.current_focus = FOCUS_SIDEBAR;
-                return;
-            }
-
             app.current_focus = FOCUS_TABBAR;
             return;
         }
