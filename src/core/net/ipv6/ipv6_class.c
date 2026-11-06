@@ -121,32 +121,32 @@ const char *ipv6_type_name(ipv6_type_t type)
 {
     switch (type) {
     case IPV6_TYPE_UNSPECIFIED:
-        return "Unspecified (Неопределённый адрес)";
+        return "Unspecified";
     case IPV6_TYPE_LOOPBACK:
-        return "Loopback (Петлевой адрес)";
+        return "Loopback";
     case IPV6_TYPE_IPV4_MAPPED:
-        return "IPv4-Mapped (Отображённый IPv4-адрес)";
+        return "IPv4-Mapped";
     case IPV6_TYPE_IPV4_COMPATIBLE:
-        return "IPv4-Compatible (Совместимый с IPv4)";
+        return "IPv4-Compatible";
     case IPV6_TYPE_LINK_LOCAL:
-        return "Link-Local (Локальный адрес канала)";
+        return "Link-Local";
     case IPV6_TYPE_UNIQUE_LOCAL:
-        return "Unique Local (Уникальный локальный адрес)";
+        return "Unique Local";
     case IPV6_TYPE_MULTICAST:
-        return "Multicast (Многоадресный адрес)";
+        return "Multicast";
     case IPV6_TYPE_SITE_LOCAL:
-        return "Site-Local (Локальный адрес сайта)";
+        return "Site-Local";
     case IPV6_TYPE_DOCUMENTATION:
-        return "Documentation (Документационный адрес)";
+        return "Documentation";
     case IPV6_TYPE_6TO4:
-        return "6to4 (Туннельный 6to4)";
+        return "6to4";
     case IPV6_TYPE_TEREDO:
-        return "Teredo (Туннельный Teredo)";
+        return "Teredo";
     case IPV6_TYPE_GLOBAL_UNICAST:
-        return "Global Unicast (Глобальный одноадресный)";
+        return "Global Unicast";
     case IPV6_TYPE_RESERVED:
-        return "Reserved (Зарезервированный)";
+        return "Reserved";
     }
 
-    return "Unknown (Неизвестный)";
+    return "Unknown";
 }
