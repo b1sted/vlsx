@@ -10,6 +10,7 @@ void test_mac(void);
 void test_vlsm(void);
 void test_hosts_list(void);
 void test_dfa(void);
+void test_metrics(void);
 
 int tests_failed = 0;
 
@@ -21,6 +22,7 @@ int main(void)
     test_vlsm();
     test_hosts_list();
     test_dfa();
+    test_metrics();
 
     if (tests_failed != 0) {
         fprintf(stderr, "%d test check(s) failed\n", tests_failed);

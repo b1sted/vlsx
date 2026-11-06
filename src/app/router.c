@@ -7,6 +7,7 @@
 #include "app/app.h"
 #include "screens/ip/ip_screen.h"
 #include "screens/l2/mac_screen.h"
+#include "screens/metrics/metrics_screen.h"
 
 void app_router_sync_tab(app_state_t *state)
 {
@@ -34,6 +35,20 @@ void app_router_sync_mac_tab(app_state_t *state)
     mac_screen_set_tab(&state->mac_screen, (size_t)state->mac_tabbar_cursor);
 }
 
+void app_router_sync_metrics_tab(app_state_t *state)
+{
+    if (state == NULL) {
+        return;
+    }
+
+    if (state->metrics_tabbar_cursor < 0 ||
+        state->metrics_tabbar_cursor >= (int)METRICS_TAB_COUNT) {
+        state->metrics_tabbar_cursor = 0;
+    }
+
+    metrics_screen_set_tab(&state->metrics_screen, (size_t)state->metrics_tabbar_cursor);
+}
+
 void app_router_change_screen(app_state_t *state)
 {
     if (state == NULL) {
@@ -54,6 +69,13 @@ void app_router_change_screen(app_state_t *state)
         state->current_screen = APP_SCR_MAC;
         app_router_sync_mac_tab(state);
         state->current_focus = FOCUS_TABBAR;
+        return;
+    }
+
+    if (state->sidebar_cursor == 2) {
+        state->current_screen = APP_SCR_METRICS;
+        app_router_sync_metrics_tab(state);
+        state->current_focus = FOCUS_TABBAR;
     }
 }
 
@@ -73,6 +95,10 @@ void app_router_change_subscreen(app_state_t *state)
     case APP_SCR_MAC:
         app_router_sync_mac_tab(state);
         mac_screen_focus(&state->mac_screen);
+        break;
+    case APP_SCR_METRICS:
+        app_router_sync_metrics_tab(state);
+        metrics_screen_focus(&state->metrics_screen);
         break;
     }
 }

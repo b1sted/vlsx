@@ -12,6 +12,7 @@
 #include "common/ui_event.h"
 #include "screens/ip/ip_screen.h"
 #include "screens/l2/mac_screen.h"
+#include "screens/metrics/metrics_screen.h"
 
 static void cursor_up(int *cursor);
 static void cursor_down(int *cursor, int item_count);
@@ -47,6 +48,10 @@ static int *active_tab_cursor(void)
         return &app.mac_tabbar_cursor;
     }
 
+    if (app.current_screen == APP_SCR_METRICS) {
+        return &app.metrics_tabbar_cursor;
+    }
+
     return NULL;
 }
 
@@ -60,6 +65,10 @@ static int active_tab_count(void)
         return (int)MAC_TAB_COUNT;
     }
 
+    if (app.current_screen == APP_SCR_METRICS) {
+        return (int)METRICS_TAB_COUNT;
+    }
+
     return 0;
 }
 
@@ -69,6 +78,8 @@ static void sync_active_tab(void)
         app_router_sync_tab(&app);
     } else if (app.current_screen == APP_SCR_MAC) {
         app_router_sync_mac_tab(&app);
+    } else if (app.current_screen == APP_SCR_METRICS) {
+        app_router_sync_metrics_tab(&app);
     }
 }
 
@@ -146,6 +157,8 @@ static void handle_input_event(const ui_event_t *event)
         ip_screen_handle(&app.ip_screen, event);
     } else if (app.current_screen == APP_SCR_MAC) {
         mac_screen_handle(&app.mac_screen, event);
+    } else if (app.current_screen == APP_SCR_METRICS) {
+        metrics_screen_handle(&app.metrics_screen, event);
     }
 }
 

@@ -19,3 +19,9 @@ const char *const app_menu_mac_tab_items[APP_MENU_MAC_TAB_COUNT] = {
     "Converter",
     "Multicast MAC",
 };
+
+const char *const app_menu_metrics_tab_items[APP_MENU_METRICS_TAB_COUNT] = {
+    "Availability",
+    "Goodput",
+    "Costs",
+};
