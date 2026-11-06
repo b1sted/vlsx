@@ -7,6 +7,7 @@
 
 #include "screens/ip/ip_screen.h"
 #include "screens/l2/mac_screen.h"
+#include "screens/metrics/metrics_screen.h"
 
 app_state_t app = {
     .current_focus = FOCUS_SIDEBAR,
@@ -31,4 +32,5 @@ void app_init(void)
 
     ip_screen_init(&app.ip_screen);
     mac_screen_init(&app.mac_screen);
+    metrics_screen_init(&app.metrics_screen);
 }

@@ -9,6 +9,7 @@
 
 #include "app/app.h"
 #include "screens/ip/ip_screen.h"
+#include "screens/metrics/metrics_screen.h"
 #include "tui/backend.h"
 #include "tui/chrome.h"
 #include "tui/layout.h"
@@ -20,6 +21,10 @@
 #include "tui/views/l2/mac_converter_view.h"
 #include "tui/views/l2/mac_multicast_view.h"
 #include "tui/views/l2/mac_tabbar.h"
+#include "tui/views/metrics/availability_view.h"
+#include "tui/views/metrics/costs_view.h"
+#include "tui/views/metrics/goodput_view.h"
+#include "tui/views/metrics/metrics_tabbar.h"
 
 static void render_content(const layout_t *layout);
 static void render_too_small(int width, int height);
@@ -53,6 +58,21 @@ static void render_content(const layout_t *layout)
             mac_multicast_view_render(&app.mac_screen.multicast, layout);
             break;
         case MAC_TAB_COUNT:
+            break;
+        }
+        break;
+    case APP_SCR_METRICS:
+        switch (metrics_screen_active_tab(&app.metrics_screen)) {
+        case METRICS_TAB_AVAILABILITY:
+            availability_view_render(&app.metrics_screen.availability, layout);
+            break;
+        case METRICS_TAB_GOODPUT:
+            goodput_view_render(&app.metrics_screen.goodput, layout);
+            break;
+        case METRICS_TAB_COSTS:
+            costs_view_render(&app.metrics_screen.costs, layout);
+            break;
+        case METRICS_TAB_COUNT:
             break;
         }
         break;
@@ -100,6 +120,8 @@ void render_frame(void)
         ip_tabbar_render(&app, &layout);
     } else if (app.current_screen == APP_SCR_MAC) {
         mac_tabbar_render(&app, &layout);
+    } else if (app.current_screen == APP_SCR_METRICS) {
+        metrics_tabbar_render(&app, &layout);
     }
 
     render_content(&layout);
