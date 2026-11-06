@@ -46,7 +46,7 @@ static void render_input_status(int x, int y, const input_field_t *field,
     const bool syntax_ok = validate(field->buf);
 
     tb_print(x, y, syntax_ok ? TUI_COLOR_GREEN : TUI_COLOR_RED, TUI_COLOR_SILVER,
-             syntax_ok ? "✓ Syntax Ok" : "✗ Invalid Syntax");
+             syntax_ok ? "✓ Syntax OK" : "✗ Invalid Syntax");
 }
 
 void ui_render_input_block(int x, int y, int width, const char *label, int post_colon_spacing,
