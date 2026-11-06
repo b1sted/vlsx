@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "common/limits.h"
 #include "core/net/mac/mac_calc.h"
@@ -18,8 +19,34 @@
 #define MAC_LABEL_WIDTH 18
 #define MAC_STATUS_MAX_WIDTH 16
 #define MAC_DETAIL_WIDTH 10
+#define MAC_BINARY_OCTETS_PER_LINE 3
+#define MAC_BINARY_BITS_PER_LINE (MAC_BINARY_OCTETS_PER_LINE * MAC_OCTET_BITS)
+#define MAC_BINARY_LINE_LENGTH (MAC_BINARY_BITS_PER_LINE + MAC_BINARY_OCTETS_PER_LINE - 1)
+#define MAC_BINARY_LINE_TEXT_MAX (MAC_BINARY_LINE_LENGTH + 1)
 
 static void mac_view_render_information(const mac_screen_t *screen, const layout_t *layout);
+static void mac_view_render_binary(int x, int y, const char *binary);
+
+static void mac_view_render_binary(int x, int y, const char *binary)
+{
+    if (binary == NULL) {
+        return;
+    }
+
+    if (strlen(binary) <= (size_t)MAC_BINARY_LINE_LENGTH) {
+        ui_render_label_value_pair(x, y, MAC_LABEL_WIDTH, "Binary:", binary);
+        return;
+    }
+
+    char first_line[MAC_BINARY_LINE_TEXT_MAX];
+    char second_line[MAC_BINARY_LINE_TEXT_MAX];
+
+    snprintf(first_line, sizeof(first_line), "%.*s", MAC_BINARY_LINE_LENGTH, binary);
+    snprintf(second_line, sizeof(second_line), "%s", binary + MAC_BINARY_LINE_LENGTH + 1);
+
+    ui_render_label_value_pair(x, y, MAC_LABEL_WIDTH, "Binary:", first_line);
+    ui_render_label_value_pair(x, y + 1, MAC_LABEL_WIDTH, "", second_line);
+}
 
 static void mac_view_render_information(const mac_screen_t *screen, const layout_t *layout)
 {
@@ -58,8 +85,7 @@ static void mac_view_render_information(const mac_screen_t *screen, const layout
                                "Linux/Windows:", screen->result.colon);
     ui_render_label_value_pair(start_x, start_y + 12, MAC_LABEL_WIDTH,
                                "Cisco:", screen->result.cisco);
-    ui_render_label_value_pair(start_x, start_y + 13, MAC_LABEL_WIDTH,
-                               "Binary:", screen->result.binary);
+    mac_view_render_binary(start_x, start_y + 13, screen->result.binary);
 }
 
 void mac_view_render(const mac_screen_t *screen, const layout_t *layout)
