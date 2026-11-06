@@ -33,7 +33,7 @@ static void test_ipv6_target_example(void)
     TEST_CHECK(strcmp(result.network_text, "fe80::") == 0);
     TEST_CHECK(strcmp(result.interface_id_text, "0a00:0027:fea8:3ebd") == 0);
     TEST_CHECK(result.type == IPV6_TYPE_LINK_LOCAL);
-    TEST_CHECK(strcmp(ipv6_type_name(result.type), "Link-Local (Локальный адрес канала)") == 0);
+    TEST_CHECK(strcmp(ipv6_type_name(result.type), "Link-Local") == 0);
     TEST_CHECK(result.network.hextets[0] == UINT16_C(0xFE80));
 
     for (size_t i = 1; i < IPV6_HEXTET_COUNT; i++) {
