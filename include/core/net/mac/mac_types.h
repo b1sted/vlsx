@@ -15,6 +15,10 @@
 #define MAC_BINARY_TEXT_MAX 54      /* 48 bits, five separators, and NUL */
 #define MAC_OCTET_BINARY_TEXT_MAX 9 /* eight bits plus NUL */
 
+#define MAC_IPV4_TEXT_MAX 16                /* "XXX.XXX.XXX.XXX" plus NUL */
+#define MAC_IPV4_BINARY_TEXT_MAX 36         /* 32 bits, three separators, and NUL */
+#define MAC_MULTICAST_EXTRACTED_TEXT_MAX 36 /* 23 bits, masks, separators, and NUL */
+
 typedef struct {
     uint8_t octets[MAC_OCTET_COUNT];
 } mac_addr_t;
@@ -41,5 +45,15 @@ typedef struct {
     char binary[MAC_BINARY_TEXT_MAX];
     char first_octet_binary[MAC_OCTET_BINARY_TEXT_MAX];
 } mac_result_t;
+
+typedef struct {
+    uint32_t ip;
+    mac_addr_t address;
+    char ip_text[MAC_IPV4_TEXT_MAX];
+    char oui[MAC_GROUP_TEXT_MAX];
+    char mac_text[MAC_TEXT_MAX];
+    char ip_binary[MAC_IPV4_BINARY_TEXT_MAX];
+    char extracted[MAC_MULTICAST_EXTRACTED_TEXT_MAX];
+} mac_multicast_result_t;
 
 #endif /* VLSX_CORE_NET_MAC_TYPES_H */
