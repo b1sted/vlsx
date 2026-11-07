@@ -22,7 +22,8 @@
 #define MAC_BINARY_OCTETS_PER_LINE 3
 #define MAC_BINARY_BITS_PER_LINE (MAC_BINARY_OCTETS_PER_LINE * MAC_OCTET_BITS)
 #define MAC_BINARY_LINE_LENGTH (MAC_BINARY_BITS_PER_LINE + MAC_BINARY_OCTETS_PER_LINE - 1)
-#define MAC_BINARY_LINE_TEXT_MAX (MAC_BINARY_LINE_LENGTH + 1)
+#define MAC_BINARY_BREAK_LENGTH (MAC_BINARY_LINE_LENGTH + 1)
+#define MAC_BINARY_LINE_TEXT_MAX (MAC_BINARY_BREAK_LENGTH + 1)
 
 static void mac_converter_view_render_information(const mac_converter_screen_t *screen,
                                                   const layout_t *layout);
@@ -42,8 +43,8 @@ static void mac_converter_view_render_binary(int x, int y, const char *binary)
     char first_line[MAC_BINARY_LINE_TEXT_MAX];
     char second_line[MAC_BINARY_LINE_TEXT_MAX];
 
-    snprintf(first_line, sizeof(first_line), "%.*s", MAC_BINARY_LINE_LENGTH, binary);
-    snprintf(second_line, sizeof(second_line), "%s", binary + MAC_BINARY_LINE_LENGTH + 1);
+    snprintf(first_line, sizeof(first_line), "%.*s", MAC_BINARY_BREAK_LENGTH, binary);
+    snprintf(second_line, sizeof(second_line), "%s", binary + MAC_BINARY_BREAK_LENGTH);
 
     ui_render_label_value_pair(x, y, MAC_LABEL_WIDTH, "Binary:", first_line);
     ui_render_label_value_pair(x, y + 1, MAC_LABEL_WIDTH, "", second_line);
