@@ -440,10 +440,11 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          fingerprint: "0DDA70A6A02167984707F0F7A8DE7BE6803A4BE2"
 
       - name: Sign checksums
         run: |
-          gpg --batch --yes --armor --detach-sign --output release_dist/SHA256SUMS.txt.asc release_dist/SHA256SUMS.txt
+          gpg --batch --yes --armor --detach-sign --local-user '0DDA70A6A02167984707F0F7A8DE7BE6803A4BE2!' --output release_dist/SHA256SUMS.txt.asc release_dist/SHA256SUMS.txt
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v4
@@ -479,6 +480,7 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          fingerprint: "0DDA70A6A02167984707F0F7A8DE7BE6803A4BE2"
           git_user_signingkey: true
           git_commit_gpgsign: true
           git_config_global: true
