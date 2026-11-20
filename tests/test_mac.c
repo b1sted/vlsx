@@ -36,7 +36,7 @@ static void test_mac_target_example(void)
     TEST_CHECK(strcmp(result.colon, "F4:46:37:55:24:86") == 0);
     TEST_CHECK(strcmp(result.oui, "F4:46:37") == 0);
     TEST_CHECK(strcmp(result.nic, "55:24:86") == 0);
-    TEST_CHECK(strcmp(result.cisco, "F446.3755.2486") == 0);
+    TEST_CHECK(strcmp(result.cisco, "f446.3755.2486") == 0);
     TEST_CHECK(strcmp(result.binary, "11110100.01000110.00110111.01010101.00100100.10000110") == 0);
     TEST_CHECK(strcmp(result.first_octet_binary, "11110100") == 0);
     TEST_CHECK(result.cast == MAC_CAST_UNICAST);
@@ -67,7 +67,7 @@ static void test_mac_notations(void)
 
     TEST_CHECK(mac_calculate("f44637552486", &result, &status));
     TEST_CHECK(strcmp(result.colon, "F4:46:37:55:24:86") == 0);
-    TEST_CHECK(strcmp(result.cisco, "F446.3755.2486") == 0);
+    TEST_CHECK(strcmp(result.cisco, "f446.3755.2486") == 0);
 }
 
 static void test_mac_bit_analysis(void)
@@ -138,8 +138,8 @@ static void test_mac_multicast_target_example(void)
     TEST_CHECK(result.address.octets[4] == UINT8_C(0x01));
     TEST_CHECK(result.address.octets[5] == UINT8_C(0x0F));
     TEST_CHECK(strcmp(result.ip_text, "239.1.1.15") == 0);
-    TEST_CHECK(strcmp(result.oui, "01:00:5e") == 0);
-    TEST_CHECK(strcmp(result.mac_text, "01:00:5e:01:01:0f") == 0);
+    TEST_CHECK(strcmp(result.oui, "01:00:5E") == 0);
+    TEST_CHECK(strcmp(result.mac_text, "01:00:5E:01:01:0F") == 0);
     TEST_CHECK(strcmp(result.ip_binary, "11101111.00000001.00000001.00001111") == 0);
     TEST_CHECK(strcmp(result.extracted, "..........0000001.00000001.00001111") == 0);
     TEST_CHECK(status.ok);
@@ -152,25 +152,25 @@ static void test_mac_multicast_boundaries(void)
     calc_status_t status = {0};
 
     TEST_CHECK(mac_multicast_generate("224.0.0.0", &result, &status));
-    TEST_CHECK(strcmp(result.mac_text, "01:00:5e:00:00:00") == 0);
+    TEST_CHECK(strcmp(result.mac_text, "01:00:5E:00:00:00") == 0);
 
     TEST_CHECK(mac_multicast_generate("224.0.0.1", &result, &status));
-    TEST_CHECK(strcmp(result.mac_text, "01:00:5e:00:00:01") == 0);
+    TEST_CHECK(strcmp(result.mac_text, "01:00:5E:00:00:01") == 0);
 
     TEST_CHECK(mac_multicast_generate("239.255.255.255", &result, &status));
-    TEST_CHECK(strcmp(result.mac_text, "01:00:5e:7f:ff:ff") == 0);
+    TEST_CHECK(strcmp(result.mac_text, "01:00:5E:7F:FF:FF") == 0);
 
     TEST_CHECK(mac_multicast_generate("224.1.1.1", &result, &status));
-    TEST_CHECK(strcmp(result.mac_text, "01:00:5e:01:01:01") == 0);
+    TEST_CHECK(strcmp(result.mac_text, "01:00:5E:01:01:01") == 0);
 
     TEST_CHECK(mac_multicast_generate("239.1.1.1", &result, &status));
-    TEST_CHECK(strcmp(result.mac_text, "01:00:5e:01:01:01") == 0);
+    TEST_CHECK(strcmp(result.mac_text, "01:00:5E:01:01:01") == 0);
 
     TEST_CHECK(mac_multicast_generate("224.128.1.1", &result, &status));
-    TEST_CHECK(strcmp(result.mac_text, "01:00:5e:00:01:01") == 0);
+    TEST_CHECK(strcmp(result.mac_text, "01:00:5E:00:01:01") == 0);
 
     TEST_CHECK(mac_multicast_generate("239.128.1.1", &result, &status));
-    TEST_CHECK(strcmp(result.mac_text, "01:00:5e:00:01:01") == 0);
+    TEST_CHECK(strcmp(result.mac_text, "01:00:5E:00:01:01") == 0);
 
     TEST_CHECK(mac_multicast_validate("239.1.1.15"));
     TEST_CHECK(!mac_multicast_validate("192.168.0.1"));
@@ -200,7 +200,8 @@ static void test_mac_multicast_errors(void)
 
     TEST_CHECK(!mac_multicast_generate("192.168.0.1", &result, &status));
     TEST_CHECK(status.code == CALC_ERR_RANGE);
-    TEST_CHECK(strcmp(status.message, "Not a Multicast IP") == 0);
+    TEST_CHECK(strcmp(status.message, "Not a multicast address.\nExpected range: 224.0.0.0/4") ==
+               0);
 
     TEST_CHECK(!mac_multicast_generate("223.255.255.255", &result, &status));
     TEST_CHECK(status.code == CALC_ERR_RANGE);

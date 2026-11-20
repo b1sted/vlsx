@@ -11,7 +11,7 @@
 #define MICRO_BUFFER 4
 
 #define V4_INPUT_MAX 19
-#define V6_INPUT_MAX 50
+#define V6_INPUT_MAX 44
 #define MAC_INPUT_MAX 18
 #define SLA_INPUT_MAX 16
 #define SLA_COST_INPUT_MAX 32

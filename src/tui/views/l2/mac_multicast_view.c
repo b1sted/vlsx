@@ -8,8 +8,8 @@
 #include "screens/l2/mac_multicast_screen.h"
 #include "tui/layout.h"
 #include "tui/primitives.h"
+#include "tui/theme.h"
 
-#define MAC_MULTICAST_INPUT_LABEL_WIDTH 13
 #define MAC_MULTICAST_INPUT_WIDTH 16
 #define MAC_MULTICAST_LABEL_WIDTH 18
 #define MAC_MULTICAST_STATUS_MAX_WIDTH 16
@@ -22,13 +22,12 @@ void mac_multicast_view_render(const mac_multicast_screen_t *screen, const layou
 
     const int start_x = layout->content_x;
     const int start_y = layout->content_y;
-    const int status_x = start_x + MAC_MULTICAST_INPUT_LABEL_WIDTH + 1 + MAC_MULTICAST_INPUT_WIDTH;
+    const int status_x = start_x + TUI_INPUT_OFFSET + MAC_MULTICAST_INPUT_WIDTH;
     const int content_right = start_x + layout->content_w;
     const bool status_inline = (status_x + MAC_MULTICAST_STATUS_MAX_WIDTH <= content_right);
 
-    ui_render_input_block(start_x, start_y, MAC_MULTICAST_INPUT_WIDTH, "Multicast IP:", 1,
-                          &screen->input, "239.1.1.15",
-                          status_inline ? mac_multicast_validate : NULL, true);
+    ui_render_input_block(start_x, start_y, MAC_MULTICAST_INPUT_WIDTH, "MCast IP:", &screen->input,
+                          "239.1.1.15", status_inline ? mac_multicast_validate : NULL, true);
 
     if (!status_inline && (!screen->has_result || screen->is_valid)) {
         ui_render_input_status(start_x, start_y + 1, &screen->input, mac_multicast_validate);

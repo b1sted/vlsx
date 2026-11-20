@@ -121,8 +121,8 @@ void ipv4_view_render(const ipv4_screen_t *screen, const layout_t *layout)
         return;
     }
 
-    ui_render_input_block(layout->content_x, layout->content_y, V4_INPUT_MAX, "IP:", 1,
-                          &screen->input, "192.168.0.54/26", ipv4_validate, true);
+    ui_render_input_block(layout->content_x, layout->content_y, V4_INPUT_MAX, "IP:", &screen->input,
+                          "192.168.0.54/26", ipv4_validate, true);
 
     if (!screen->has_result) {
         return;

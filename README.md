@@ -128,10 +128,10 @@ F44637552486
 ```
 
 For `F4:46:37:55:24:86` it reports the OUI (`F4:46:37`), NIC part
-(`55:24:86`), cast type, administration type, Linux/Windows and Cisco
-formats, the full binary representation, and the bit analysis of the first
-octet. Bit 0 selects unicast or multicast; bit 1 selects universally or locally
-administered addresses.
+(`55:24:86`), cast type, administration type, Linux/Windows
+(`F4:46:37:55:24:86`) and Cisco (`f446.3755.2486`) formats, the full binary
+representation, and the bit analysis of the first octet. Bit 0 selects unicast
+or multicast; bit 1 selects universally or locally administered addresses.
 
 ### Multicast MAC generator
 

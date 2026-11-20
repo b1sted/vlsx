@@ -31,11 +31,9 @@ void availability_view_render(const availability_screen_t *screen, const layout_
     const bool first_active = (screen->active_input == 0);
 
     ui_render_input_block(layout->content_x, layout->content_y, SLA_INPUT_MAX,
-                          "Uptime Base (hours):", 2, &screen->fields[0], "8760",
-                          sla_validate_number, first_active);
+                          "Uptime:", &screen->fields[0], "8760", sla_validate_number, first_active);
     ui_render_input_block(layout->content_x, layout->content_y + 1, SLA_INPUT_MAX,
-                          "Downtime (hours):", 2, &screen->fields[1], "2", sla_validate_number,
-                          !first_active);
+                          "Downtime:", &screen->fields[1], "2", sla_validate_number, !first_active);
 
     if (!screen->has_result) {
         return;

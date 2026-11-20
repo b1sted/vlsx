@@ -35,8 +35,8 @@ void ui_render_input_cursor(int x, int y, const input_field_t *field, const char
         under_cursor = placeholder[field->cursor];
     }
 
-    tb_set_cell(x + (int)field->cursor, y, (uint32_t)(unsigned char)under_cursor,
-                TUI_COLOR_SILVER, TUI_COLOR_BLACK);
+    tb_set_cell(x + (int)field->cursor, y, (uint32_t)(unsigned char)under_cursor, TUI_COLOR_SILVER,
+                TUI_COLOR_BLACK);
 }
 
 static void render_input_field(int x, int y, const input_field_t *field, const char *placeholder,
@@ -72,9 +72,8 @@ void ui_render_input_status(int x, int y, const input_field_t *field,
              syntax_ok ? "✓ Syntax OK" : "✗ Invalid Syntax");
 }
 
-void ui_render_input_block(int x, int y, int width, const char *label, int post_colon_spacing,
-                           const input_field_t *field, const char *placeholder,
-                           bool (*validate)(const char *), bool is_active)
+void ui_render_input_block(int x, int y, int width, const char *label, const input_field_t *field,
+                           const char *placeholder, bool (*validate)(const char *), bool is_active)
 {
     if (label == NULL || field == NULL) {
         return;
@@ -82,8 +81,7 @@ void ui_render_input_block(int x, int y, int width, const char *label, int post_
 
     tb_print(x, y, TUI_COLOR_BLACK | TB_BOLD, TUI_COLOR_SILVER, label);
 
-    const int label_len = (int)strlen(label);
-    const int input_x = x + label_len + post_colon_spacing;
+    const int input_x = x + TUI_INPUT_OFFSET;
 
     render_input_field(input_x, y, field, placeholder, is_active);
     ui_render_input_status(input_x + width, y, field, validate);
@@ -114,7 +112,7 @@ void ui_render_label_value_pair(int x, int y, int width, const char *label, cons
     }
 
     tb_print(x, y, TUI_COLOR_BLACK | TB_BOLD, TUI_COLOR_SILVER, label);
-    tb_print(x + width, y, TUI_COLOR_BLACK, TUI_COLOR_SILVER, value);
+    tb_print(x + width + TUI_LABEL_VALUE_GAP, y, TUI_COLOR_BLACK, TUI_COLOR_SILVER, value);
 }
 
 void ui_render_bin_number(int x, int y, uint8_t number)

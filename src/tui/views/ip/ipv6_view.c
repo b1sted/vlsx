@@ -12,10 +12,10 @@
 #include "screens/ip/ipv6_screen.h"
 #include "tui/layout.h"
 #include "tui/primitives.h"
+#include "tui/theme.h"
 
-#define IPV6_LABEL_WIDTH 15
-#define IPV6_INPUT_WIDTH (V6_INPUT_MAX - 1)
-#define IPV6_INPUT_LABEL_WIDTH 4
+#define IPV6_LABEL_WIDTH 14
+#define IPV6_INPUT_WIDTH V6_INPUT_MAX
 #define IPV6_STATUS_MAX_WIDTH 16
 
 static void ipv6_view_render_information(const ipv6_screen_t *screen, const layout_t *layout,
@@ -52,7 +52,7 @@ static void ipv6_view_render_information(const ipv6_screen_t *screen, const layo
     ui_render_section_title(start_x, start_y + 8, "[ NETWORK INFORMATION ]");
     ui_render_label_value_pair(start_x, start_y + 9, IPV6_LABEL_WIDTH, "Prefix Length:", prefix);
     ui_render_label_value_pair(start_x, start_y + 10, IPV6_LABEL_WIDTH,
-                               "Network Prefix:", screen->result.network_text);
+                               "Network:", screen->result.network_text);
     ui_render_label_value_pair(start_x, start_y + 11, IPV6_LABEL_WIDTH,
                                "Interface ID:", interface_id);
     ui_render_label_value_pair(start_x, start_y + 12, IPV6_LABEL_WIDTH,
@@ -65,12 +65,12 @@ void ipv6_view_render(const ipv6_screen_t *screen, const layout_t *layout)
         return;
     }
 
-    const int status_x = layout->content_x + IPV6_INPUT_LABEL_WIDTH + IPV6_INPUT_WIDTH;
+    const int status_x = layout->content_x + TUI_INPUT_OFFSET + IPV6_INPUT_WIDTH;
     const int content_right = layout->content_x + layout->content_w;
     const bool status_inline = (status_x + IPV6_STATUS_MAX_WIDTH <= content_right);
 
-    ui_render_input_block(layout->content_x, layout->content_y, IPV6_INPUT_WIDTH, "IP:", 1,
-                          &screen->input, "fe80::a00:27:fea8:3ebd/64",
+    ui_render_input_block(layout->content_x, layout->content_y, IPV6_INPUT_WIDTH,
+                          "IP:", &screen->input, "fe80::a00:27:fea8:3ebd/64",
                           status_inline ? ipv6_validate : NULL, true);
 
     if (!status_inline && (!screen->has_result || screen->is_valid)) {

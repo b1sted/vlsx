@@ -8,6 +8,9 @@
 #define TUI_MIN_WIDTH 90
 #define TUI_MIN_HEIGHT 24
 
+#define TUI_INPUT_OFFSET 10
+#define TUI_LABEL_VALUE_GAP 1
+
 #define TUI_ARROW_LEFT 0x2192 /* -> */
 
 #define TUI_BOX_TL 0x250C /* ┌ */

@@ -62,7 +62,7 @@ void mac_format_cisco(const mac_addr_t *addr, char *dest, size_t dest_size)
         return;
     }
 
-    written = snprintf(dest, dest_size, "%02X%02X.%02X%02X.%02X%02X", (unsigned int)addr->octets[0],
+    written = snprintf(dest, dest_size, "%02x%02x.%02x%02x.%02x%02x", (unsigned int)addr->octets[0],
                        (unsigned int)addr->octets[1], (unsigned int)addr->octets[2],
                        (unsigned int)addr->octets[3], (unsigned int)addr->octets[4],
                        (unsigned int)addr->octets[5]);
