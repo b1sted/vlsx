@@ -14,6 +14,8 @@ void ui_render_input_status(int x, int y, const input_field_t *field,
 void ui_render_input_block(int x, int y, int width, const char *label, int post_colon_spacing,
                            const input_field_t *field, const char *placeholder,
                            bool (*validate)(const char *), bool is_active);
+void ui_render_input_cursor(int x, int y, const input_field_t *field, const char *placeholder);
+void ui_render_set_input_focus(bool focused);
 
 void ui_render_section_title(int x, int y, const char *title);
 void ui_render_label_value_pair(int x, int y, int width, const char *label, const char *value);

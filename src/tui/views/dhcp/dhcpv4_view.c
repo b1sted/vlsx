@@ -44,7 +44,7 @@ static void dhcpv4_view_render_input(const dhcpv4_screen_t *screen, const layout
     ui_render_input_status(layout->content_x + DHCP_STATUS_OFFSET, layout->content_y, field,
                            dhcp_validate_lease);
 
-    tb_set_cursor(input_x + (int)field->cursor, layout->content_y);
+    ui_render_input_cursor(input_x, layout->content_y, field, DHCP_PLACEHOLDER);
 }
 
 static void dhcpv4_view_format_duration(double minutes, char *dest, size_t dest_size)
