@@ -31,6 +31,16 @@
 
 static void render_content(const layout_t *layout);
 static void render_too_small(int width, int height);
+static void present_frame(void);
+
+static void present_frame(void)
+{
+    if (app.current_focus != FOCUS_INPUT) {
+        tb_hide_cursor();
+    }
+
+    tui_backend_present();
+}
 
 static void render_content(const layout_t *layout)
 {
@@ -114,7 +124,7 @@ void render_frame(void)
 
     if (width < TUI_MIN_WIDTH || height < TUI_MIN_HEIGHT) {
         render_too_small(width, height);
-        tui_backend_present();
+        present_frame();
         return;
     }
 
@@ -140,5 +150,5 @@ void render_frame(void)
 
     render_content(&layout);
 
-    tui_backend_present();
+    present_frame();
 }
