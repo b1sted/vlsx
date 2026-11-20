@@ -7,8 +7,8 @@
   </strong>
 </p>
 <p align="center">
-  <a href="https://github.com/b1sted/vlsx/actions/workflows/ci.yml">
-    <img src="https://github.com/b1sted/vlsx/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square&label=CI" alt="CI Status">
+  <a href="https://github.com/b1sted/vlsx/actions/workflows/test.yml">
+    <img src="https://github.com/b1sted/vlsx/actions/workflows/test.yml/badge.svg?branch=main&style=flat-square&label=Tests" alt="Test Status">
   </a>
   <a href="https://github.com/b1sted/vlsx/releases/latest">
     <img src="https://img.shields.io/github/v/release/b1sted/vlsx?style=flat-square&label=Release" alt="Latest Release">
@@ -270,7 +270,7 @@ documentation-only commits do not occupy a runner.
 
 ### CI
 
-`.github/workflows/ci.yml` runs:
+`.github/workflows/test.yml` (`Test, Leak & Lint`) runs:
 
 - on pull requests targeting `main` or `dev`;
 - on pushes to `main`;
@@ -286,16 +286,20 @@ UndefinedBehaviorSanitizer, check formatting with `clang-format`, and run
 
 ### Releases
 
-`.github/workflows/release.yml` runs when a tag matching `v*` is pushed. It
-verifies the build and tests, then produces tarballs for:
+`.github/workflows/release.yml` runs when a tag matching `v*.*` or `v*.*.*` is
+pushed. Testing, leak checks, and linting live in `.github/workflows/test.yml`,
+which runs on pull requests and pushes to `main`. The release workflow calls the
+same workflow with `workflow_call` before any build starts, so a tag cannot be
+published unless those checks pass. It then builds and smoke-tests:
 
-- Linux x86_64;
-- Linux ARM64;
-- macOS Apple Silicon;
-- macOS Intel.
+- Linux: amd64, arm64, armv7, riscv64, and Luckfox ARM;
+- Android/Termux: aarch64, armv7, and x86_64;
+- macOS: Apple Silicon, Intel legacy (10.7), and Intel modern (10.9).
 
-The archives are attached to the GitHub release. Tags containing a hyphen, such
-as `v0.2.0-rc1`, are marked as prereleases.
+The release publishes `.tar.gz` archives, `deb`/`rpm`/Arch Linux packages for
+Linux, Termux `.deb` packages, a GPG-signed `SHA256SUMS.txt`, GitHub build
+provenance attestations, and an updated Homebrew tap formula. Tags containing a
+hyphen, such as `v0.2.0-rc1`, are marked as prereleases.
 
 ### Local checks
 

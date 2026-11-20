@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "app/app.h"
 #include "app/events.h"
@@ -13,6 +14,10 @@
 #include "tui/render.h"
 #include "tui/views/ip/vlsm_view.h"
 
+#ifndef VLSX_VERSION
+#define VLSX_VERSION "dev"
+#endif
+
 static bool vlsm_view_is_active(void);
 
 static bool vlsm_view_is_active(void)
@@ -21,8 +26,18 @@ static bool vlsm_view_is_active(void)
            ip_screen_active_tab(&app.ip_screen) == IP_TAB_VLSM;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
+    if (argc > 1) {
+        if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
+            printf("vlsx %s\n", VLSX_VERSION);
+            return EXIT_SUCCESS;
+        }
+
+        fprintf(stderr, "Usage: %s [-v|--version]\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
     setlocale(LC_ALL, "");
 
     const int init_code = tui_backend_init();
