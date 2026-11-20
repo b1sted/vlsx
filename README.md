@@ -126,6 +126,23 @@ sudo install -m 0755 vlsx /usr/local/bin/vlsx
 > xattr -d com.apple.quarantine ./vlsx
 > ```
 
+### Verification
+
+Every release publishes checksums, a GPG signature, and build provenance.
+Verify the downloaded files with any of the following methods:
+
+```bash
+# SHA256 checksums
+sha256sum -c SHA256SUMS.txt --ignore-missing
+
+# GPG signature
+curl -fsSL https://github.com/b1sted.gpg | gpg --import && \
+  gpg --verify SHA256SUMS.txt.asc SHA256SUMS.txt
+
+# GitHub build attestation
+gh attestation verify vlsx-linux-amd64.tar.gz --repo b1sted/vlsx
+```
+
 ## Modules
 
 The application is split into four top-level modules. Each module has tabs that
