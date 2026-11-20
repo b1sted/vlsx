@@ -77,7 +77,7 @@ jobs:
   build-linux-armv7:
     name: Build (linux-armv7)
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -86,8 +86,7 @@ jobs:
       - name: Install cross toolchain and QEMU
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            gcc-arm-linux-gnueabihf qemu-user
+          sudo apt-get install -y --no-install-recommends gcc-arm-linux-gnueabihf libc6-dev-armhf-cross qemu-user
 
       - name: Build release binary
         run: >-
@@ -114,7 +113,7 @@ jobs:
   build-linux-riscv64:
     name: Build (linux-riscv64)
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -123,8 +122,7 @@ jobs:
       - name: Install cross toolchain and QEMU
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            gcc-riscv64-linux-gnu qemu-user
+          sudo apt-get install -y --no-install-recommends gcc-riscv64-linux-gnu libc6-dev-riscv64-cross qemu-user
 
       - name: Build release binary
         run: >-
