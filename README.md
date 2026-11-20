@@ -22,6 +22,7 @@
 </p>
 <p align="center">
   <a href="#features">Features</a> •
+  <a href="#installation">Installation</a> •
   <a href="#modules">Modules</a> •
   <a href="#controls">Controls</a> •
   <a href="#build-and-run">Build and run</a> •
@@ -67,6 +68,63 @@ no runtime dependencies beyond a POSIX terminal.
   minutes.
 - **Zero dependencies**: only libc, POSIX, and the vendored single-header
   `third_party/termbox2.h`.
+
+## Installation
+
+### Homebrew (macOS & Linux)
+
+```bash
+brew install b1sted/tap/vlsx
+```
+
+The tap tracks the latest stable release and builds it from source for the
+current platform.
+
+### Linux packages
+
+Native packages for `amd64`, `arm64`, `armv7`, and `riscv64` are attached to
+every [GitHub Release](https://github.com/b1sted/vlsx/releases). Download the
+package for your distribution and install it locally:
+
+```bash
+# Debian / Ubuntu
+sudo apt install ./vlsx_0.1.1_*.deb
+
+# Fedora / RHEL / openSUSE
+sudo dnf install ./vlsx-0.1.1.*.rpm
+
+# Arch Linux
+sudo pacman -U ./vlsx-0.1.1-*.pkg.tar.zst
+```
+
+### Android (Termux)
+
+The release ships native Termux `.deb` packages for `aarch64`, `arm`, and
+`x86_64`:
+
+```bash
+pkg install ./vlsx_0.1.1_*.deb
+```
+
+### Prebuilt binaries (`.tar.gz`)
+
+Standalone archives are published for Linux (`amd64`, `arm64`, `armv7`,
+`riscv64`, and Luckfox ARM), Android/Termux, and macOS (`arm64`, Intel modern,
+and Intel legacy). Download the archive for your platform, unpack it, and move
+`vlsx` onto your `PATH`:
+
+```bash
+tar -xzf vlsx-linux-amd64.tar.gz
+sudo install -m 0755 vlsx /usr/local/bin/vlsx
+```
+
+> [!NOTE]
+> macOS marks binaries downloaded through a browser as quarantined. Remove the
+> attribute before the first run:
+>
+> ```bash
+> xattr -d com.apple.quarantine ./vlsx
+> ```
 
 ## Modules
 
