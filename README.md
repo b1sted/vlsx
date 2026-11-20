@@ -8,7 +8,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/b1sted/vlsx/actions/workflows/test.yml">
-    <img src="https://github.com/b1sted/vlsx/actions/workflows/test.yml/badge.svg?branch=main&style=flat-square&label=Tests" alt="Test Status">
+    <img src="https://img.shields.io/github/actions/workflow/status/b1sted/vlsx/test.yml?style=flat-square&label=Test,%20Leak%20%26%20Lint" alt="Test Status">
   </a>
   <a href="https://github.com/b1sted/vlsx/releases/latest">
     <img src="https://img.shields.io/github/v/release/b1sted/vlsx?style=flat-square&label=Release" alt="Latest Release">
