@@ -13,9 +13,9 @@
 #include "screens/l2/mac_converter_screen.h"
 #include "tui/layout.h"
 #include "tui/primitives.h"
+#include "tui/theme.h"
 
 #define MAC_INPUT_WIDTH 32
-#define MAC_INPUT_LABEL_WIDTH 4
 #define MAC_LABEL_WIDTH 18
 #define MAC_STATUS_MAX_WIDTH 16
 #define MAC_DETAIL_WIDTH 10
@@ -97,13 +97,13 @@ void mac_converter_view_render(const mac_converter_screen_t *screen, const layou
         return;
     }
 
-    const int status_x = layout->content_x + MAC_INPUT_LABEL_WIDTH + 1 + MAC_INPUT_WIDTH;
+    const int status_x = layout->content_x + TUI_INPUT_OFFSET + MAC_INPUT_WIDTH;
     const int content_right = layout->content_x + layout->content_w;
     const bool status_inline = (status_x + MAC_STATUS_MAX_WIDTH <= content_right);
 
-    ui_render_input_block(layout->content_x, layout->content_y, MAC_INPUT_WIDTH, "MAC:", 1,
-                          &screen->input, "F4:46:37:55:24:86", status_inline ? mac_validate : NULL,
-                          true);
+    ui_render_input_block(layout->content_x, layout->content_y, MAC_INPUT_WIDTH,
+                          "MAC:", &screen->input, "F4:46:37:55:24:86",
+                          status_inline ? mac_validate : NULL, true);
 
     if (!status_inline && (!screen->has_result || screen->is_valid)) {
         ui_render_input_status(layout->content_x, layout->content_y + 1, &screen->input,

@@ -23,10 +23,9 @@ void goodput_view_render(const goodput_screen_t *screen, const layout_t *layout)
     const bool first_active = (screen->active_input == 0);
 
     ui_render_input_block(layout->content_x, layout->content_y, SLA_INPUT_MAX,
-                          "Bandwidth (Mbps):", 2, &screen->fields[0], "100", sla_validate_number,
-                          first_active);
+                          "BW:", &screen->fields[0], "100", sla_validate_number, first_active);
     ui_render_input_block(layout->content_x, layout->content_y + 1, SLA_INPUT_MAX,
-                          "Overhead (%):", 2, &screen->fields[1], "15", sla_validate_number,
+                          "Overhead:", &screen->fields[1], "15", sla_validate_number,
                           !first_active);
 
     if (!screen->has_result) {

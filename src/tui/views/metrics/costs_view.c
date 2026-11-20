@@ -22,11 +22,12 @@ void costs_view_render(const costs_screen_t *screen, const layout_t *layout)
 
     const bool first_active = (screen->active_input == 0);
 
-    ui_render_input_block(layout->content_x, layout->content_y, SLA_COST_INPUT_MAX, "CapEx:", 1,
-                          &screen->fields[0], "5000, 200, 1000", sla_validate_cost_list,
+    ui_render_input_block(layout->content_x, layout->content_y, SLA_COST_INPUT_MAX,
+                          "CapEx:", &screen->fields[0], "5000, 200, 1000", sla_validate_cost_list,
                           first_active);
-    ui_render_input_block(layout->content_x, layout->content_y + 1, SLA_COST_INPUT_MAX, "OpEx:", 1,
-                          &screen->fields[1], "100, 50, 20", sla_validate_cost_list, !first_active);
+    ui_render_input_block(layout->content_x, layout->content_y + 1, SLA_COST_INPUT_MAX,
+                          "OpEx:", &screen->fields[1], "100, 50, 20", sla_validate_cost_list,
+                          !first_active);
 
     if (!screen->has_result) {
         return;

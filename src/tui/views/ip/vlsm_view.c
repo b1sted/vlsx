@@ -197,10 +197,12 @@ void vlsm_view_render(const vlsm_screen_t *screen, const layout_t *layout)
 
     const bool first_active = (screen->active_input == 0);
 
-    ui_render_input_block(layout->content_x, layout->content_y, MINI_BUFFER, "CIDR:", 2,
-                          &screen->fields[0], "192.168.0.54/26", ipv4_validate, first_active);
-    ui_render_input_block(layout->content_x, layout->content_y + 1, MINI_BUFFER, "Hosts:", 1,
-                          &screen->fields[1], "500, 100, 2", hosts_validate, !first_active);
+    ui_render_input_block(layout->content_x, layout->content_y, MINI_BUFFER,
+                          "CIDR:", &screen->fields[0], "192.168.0.54/26", ipv4_validate,
+                          first_active);
+    ui_render_input_block(layout->content_x, layout->content_y + 1, MINI_BUFFER,
+                          "Hosts:", &screen->fields[1], "500, 100, 2", hosts_validate,
+                          !first_active);
 
     if (!screen->has_result) {
         return;

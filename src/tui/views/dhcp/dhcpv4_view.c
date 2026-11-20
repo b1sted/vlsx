@@ -17,7 +17,6 @@
 #include "tui/theme.h"
 
 #define DHCP_LABEL_WIDTH 25
-#define DHCP_INPUT_OFFSET 12
 #define DHCP_STATUS_OFFSET 35
 #define DHCP_PLACEHOLDER "600"
 #define DHCP_PLACEHOLDER_LEN 3
@@ -31,11 +30,11 @@ static void dhcpv4_view_render_input(const dhcpv4_screen_t *screen, const layout
 {
     const input_field_t *field = &screen->input;
     const bool has_input = field->len > 0;
-    const int input_x = layout->content_x + DHCP_INPUT_OFFSET;
+    const int input_x = layout->content_x + TUI_INPUT_OFFSET;
     const int display_len = has_input ? (int)field->len : DHCP_PLACEHOLDER_LEN;
 
     tb_print(layout->content_x, layout->content_y, TUI_COLOR_BLACK | TB_BOLD, TUI_COLOR_SILVER,
-             "Lease Time:");
+             "Lease:");
     tb_print(input_x, layout->content_y, has_input ? TUI_COLOR_BLACK : TUI_COLOR_COBALT,
              TUI_COLOR_SILVER, has_input ? field->buf : DHCP_PLACEHOLDER);
     tb_print(input_x + display_len + 1, layout->content_y, TUI_COLOR_BLACK, TUI_COLOR_SILVER,
@@ -79,8 +78,8 @@ static int dhcpv4_view_render_detail(int x, int y, int content_width, const char
 {
     tb_print(x, y, TUI_COLOR_BLACK | TB_BOLD, TUI_COLOR_SILVER, label);
 
-    const int value_x = x + DHCP_LABEL_WIDTH;
-    const int available = content_width - DHCP_LABEL_WIDTH;
+    const int value_x = x + DHCP_LABEL_WIDTH + TUI_LABEL_VALUE_GAP;
+    const int available = content_width - DHCP_LABEL_WIDTH - TUI_LABEL_VALUE_GAP;
 
     if (value == NULL || available <= 0) {
         return y + 1;
