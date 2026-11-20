@@ -1,6 +1,8 @@
 CC          ?= gcc
 AR          ?= ar
-override CPPFLAGS += -Iinclude -isystem third_party -MMD -MP -D_XOPEN_SOURCE=700 -D_DEFAULT_SOURCE
+VERSION     ?= dev
+override CPPFLAGS += -Iinclude -isystem third_party -MMD -MP -D_XOPEN_SOURCE=700 -D_DEFAULT_SOURCE \
+                     -DVLSX_VERSION=\"$(VERSION)\"
 override CFLAGS   += -std=gnu99 \
                     -Wall -Wextra -Werror \
                     -pedantic \
