@@ -22,6 +22,7 @@ LEAKS_LDFLAGS := -fsanitize=address -fsanitize=undefined
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Darwin)
+    override CPPFLAGS += -D_DARWIN_C_SOURCE
     DEV_CFLAGS  += -gdwarf-4
     REL_LDFLAGS := -Wl,-dead_strip
 else ifneq (,$(filter $(UNAME_S),Linux Android))
