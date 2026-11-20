@@ -13,6 +13,9 @@
   <a href="https://github.com/b1sted/vlsx/releases/latest">
     <img src="https://img.shields.io/github/v/release/b1sted/vlsx?style=flat-square&label=Release" alt="Latest Release">
   </a>
+  <a href="https://github.com/b1sted/homebrew-tap">
+    <img src="https://img.shields.io/badge/Homebrew-b1sted%2Ftap-FBB040?style=flat-square&logo=homebrew&logoColor=white" alt="Homebrew Tap">
+  </a>
   <a href="#license">
     <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-blue?style=flat-square" alt="License">
   </a>
