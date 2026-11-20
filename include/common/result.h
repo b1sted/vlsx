@@ -23,6 +23,7 @@ typedef struct {
 
 void calc_status_clear(calc_status_t *status);
 void calc_status_fail(calc_status_t *status, calc_error_t code, const char *message);
-void calc_status_failf(calc_status_t *status, calc_error_t code, const char *format, ...);
+void calc_status_failf(calc_status_t *status, calc_error_t code, const char *format, ...)
+    __attribute__((format(printf, 3, 4)));
 
 #endif /* VLSX_COMMON_RESULT_H */
