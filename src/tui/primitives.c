@@ -72,8 +72,9 @@ void ui_render_input_status(int x, int y, const input_field_t *field,
              syntax_ok ? "✓ Syntax OK" : "✗ Invalid Syntax");
 }
 
-void ui_render_input_block(int x, int y, int width, const char *label, const input_field_t *field,
-                           const char *placeholder, bool (*validate)(const char *), bool is_active)
+void ui_render_input_block(int x, int y, int width, int label_width, const char *label,
+                           const input_field_t *field, const char *placeholder,
+                           bool (*validate)(const char *), bool is_active)
 {
     if (label == NULL || field == NULL) {
         return;
@@ -81,7 +82,7 @@ void ui_render_input_block(int x, int y, int width, const char *label, const inp
 
     tb_print(x, y, TUI_COLOR_BLACK | TB_BOLD, TUI_COLOR_SILVER, label);
 
-    const int input_x = x + TUI_INPUT_OFFSET;
+    const int input_x = x + label_width + TUI_LABEL_VALUE_GAP;
 
     render_input_field(input_x, y, field, placeholder, is_active);
     ui_render_input_status(input_x + width, y, field, validate);

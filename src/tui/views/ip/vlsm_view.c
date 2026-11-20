@@ -26,6 +26,7 @@
 #define VLSM_TABLE_MIN_VIEW_WIDTH 54
 #define VLSM_TABLE_MIN_VIEW_HEIGHT (VLSM_TABLE_HEADER_ROWS + VLSM_TABLE_MIN_DATA_ROWS)
 #define VLSM_INFO_LABEL_WIDTH 14
+#define VLSM_INPUT_LABEL_WIDTH 6
 
 typedef enum {
     VLSM_COL_REQ,
@@ -197,12 +198,12 @@ void vlsm_view_render(const vlsm_screen_t *screen, const layout_t *layout)
 
     const bool first_active = (screen->active_input == 0);
 
-    ui_render_input_block(layout->content_x, layout->content_y, MINI_BUFFER,
+    ui_render_input_block(layout->content_x, layout->content_y, MINI_BUFFER, VLSM_INPUT_LABEL_WIDTH,
                           "CIDR:", &screen->fields[0], "192.168.0.54/26", ipv4_validate,
                           first_active);
     ui_render_input_block(layout->content_x, layout->content_y + 1, MINI_BUFFER,
-                          "Hosts:", &screen->fields[1], "500, 100, 2", hosts_validate,
-                          !first_active);
+                          VLSM_INPUT_LABEL_WIDTH, "Hosts:", &screen->fields[1], "500, 100, 2",
+                          hosts_validate, !first_active);
 
     if (!screen->has_result) {
         return;

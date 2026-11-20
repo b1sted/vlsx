@@ -14,6 +14,7 @@
 #include "tui/primitives.h"
 
 #define AVAILABILITY_LABEL_WIDTH 31
+#define AVAILABILITY_INPUT_LABEL_WIDTH 20
 
 static double availability_view_truncate(double value, double scale);
 
@@ -30,10 +31,12 @@ void availability_view_render(const availability_screen_t *screen, const layout_
 
     const bool first_active = (screen->active_input == 0);
 
-    ui_render_input_block(layout->content_x, layout->content_y, SLA_INPUT_MAX,
-                          "Uptime:", &screen->fields[0], "8760", sla_validate_number, first_active);
+    ui_render_input_block(
+        layout->content_x, layout->content_y, SLA_INPUT_MAX, AVAILABILITY_INPUT_LABEL_WIDTH,
+        "Uptime Base (hours):", &screen->fields[0], "8760", sla_validate_number, first_active);
     ui_render_input_block(layout->content_x, layout->content_y + 1, SLA_INPUT_MAX,
-                          "Downtime:", &screen->fields[1], "2", sla_validate_number, !first_active);
+                          AVAILABILITY_INPUT_LABEL_WIDTH, "Downtime (hours):", &screen->fields[1],
+                          "2", sla_validate_number, !first_active);
 
     if (!screen->has_result) {
         return;

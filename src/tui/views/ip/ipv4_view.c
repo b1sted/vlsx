@@ -18,6 +18,7 @@
 
 #define IPV4_INFO_SECTION_MAX 34
 #define IPV4_RANGE_SECTION_MAX 28
+#define IPV4_INPUT_LABEL_WIDTH 3
 #define IPV4_HORIZONTAL_PADDING 2
 #define IPV4_RANGE_TITLE_WIDTH 13
 
@@ -121,8 +122,9 @@ void ipv4_view_render(const ipv4_screen_t *screen, const layout_t *layout)
         return;
     }
 
-    ui_render_input_block(layout->content_x, layout->content_y, V4_INPUT_MAX, "IP:", &screen->input,
-                          "192.168.0.54/26", ipv4_validate, true);
+    ui_render_input_block(layout->content_x, layout->content_y, V4_INPUT_MAX,
+                          IPV4_INPUT_LABEL_WIDTH, "IP:", &screen->input, "192.168.0.54/26",
+                          ipv4_validate, true);
 
     if (!screen->has_result) {
         return;

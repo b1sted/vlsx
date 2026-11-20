@@ -13,6 +13,7 @@
 #include "tui/primitives.h"
 
 #define COSTS_LABEL_WIDTH 15
+#define COSTS_INPUT_LABEL_WIDTH 6
 
 void costs_view_render(const costs_screen_t *screen, const layout_t *layout)
 {
@@ -23,11 +24,11 @@ void costs_view_render(const costs_screen_t *screen, const layout_t *layout)
     const bool first_active = (screen->active_input == 0);
 
     ui_render_input_block(layout->content_x, layout->content_y, SLA_COST_INPUT_MAX,
-                          "CapEx:", &screen->fields[0], "5000, 200, 1000", sla_validate_cost_list,
-                          first_active);
+                          COSTS_INPUT_LABEL_WIDTH, "CapEx:", &screen->fields[0], "5000, 200, 1000",
+                          sla_validate_cost_list, first_active);
     ui_render_input_block(layout->content_x, layout->content_y + 1, SLA_COST_INPUT_MAX,
-                          "OpEx:", &screen->fields[1], "100, 50, 20", sla_validate_cost_list,
-                          !first_active);
+                          COSTS_INPUT_LABEL_WIDTH, "OpEx:", &screen->fields[1], "100, 50, 20",
+                          sla_validate_cost_list, !first_active);
 
     if (!screen->has_result) {
         return;
