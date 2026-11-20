@@ -175,7 +175,8 @@ bool mac_multicast_generate(const char *text, mac_multicast_result_t *out, calc_
     }
 
     if ((ip >> MAC_MULTICAST_IP_VERSION_BITS) != MAC_MULTICAST_IP_CLASS_D) {
-        calc_status_fail(status, CALC_ERR_RANGE, "Not a Multicast IP");
+        calc_status_fail(status, CALC_ERR_RANGE,
+                         "Not a multicast address.\nExpected range: 224.0.0.0/4");
         return false;
     }
 
@@ -193,9 +194,9 @@ bool mac_multicast_generate(const char *text, mac_multicast_result_t *out, calc_
     mac_multicast_format_ip_binary(ip, out->ip_binary, sizeof(out->ip_binary));
     mac_multicast_format_extracted(ip, out->extracted, sizeof(out->extracted));
 
-    snprintf(out->oui, sizeof(out->oui), "%02x:%02x:%02x", (unsigned int)out->address.octets[0],
+    snprintf(out->oui, sizeof(out->oui), "%02X:%02X:%02X", (unsigned int)out->address.octets[0],
              (unsigned int)out->address.octets[1], (unsigned int)out->address.octets[2]);
-    snprintf(out->mac_text, sizeof(out->mac_text), "%02x:%02x:%02x:%02x:%02x:%02x",
+    snprintf(out->mac_text, sizeof(out->mac_text), "%02X:%02X:%02X:%02X:%02X:%02X",
              (unsigned int)out->address.octets[0], (unsigned int)out->address.octets[1],
              (unsigned int)out->address.octets[2], (unsigned int)out->address.octets[3],
              (unsigned int)out->address.octets[4], (unsigned int)out->address.octets[5]);
