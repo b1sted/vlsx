@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://nfpm.goreleaser.com/static/schema.json
+name: "vlsx"
+arch: "${NFPM_ARCH}"
+platform: "linux"
+version: "${VERSION}"
+version_schema: "semver"
+section: "utils"
+priority: "optional"
+maintainer: "Nikita Mandrykin <pkg@basted.dev>"
+description: |-
+  A lightweight terminal toolkit in C for network engineers to calculate VLSM, multicast MACs, SLA metrics, and DHCP timers.
+homepage: "https://github.com/b1sted/vlsx"
+license: "GPL-3.0-or-later"
+contents:
+  - src: "./nfpm_staging/vlsx"
+    dst: "/usr/bin/vlsx"
+    file_info:
+      mode: 0755
