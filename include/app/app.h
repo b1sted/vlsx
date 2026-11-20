@@ -10,7 +10,7 @@
 #include "screens/l2/mac_screen.h"
 #include "screens/metrics/metrics_screen.h"
 
-#define APP_VERSION "v0.1-alpha"
+#define APP_VERSION "v0.1"
 
 typedef enum {
     FOCUS_SIDEBAR,
