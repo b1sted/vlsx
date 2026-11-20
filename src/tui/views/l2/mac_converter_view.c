@@ -57,7 +57,7 @@ static void mac_converter_view_render_information(const mac_converter_screen_t *
     const int start_y = layout->content_y;
 
     if (!screen->is_valid) {
-        ui_render_input_error(start_x, start_y + 1, screen->status.message);
+        ui_render_input_error(start_x, start_y + 2, screen->status.message);
         return;
     }
 

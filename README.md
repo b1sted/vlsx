@@ -33,8 +33,13 @@ It is written in C99, keeps all calculator logic independent of the UI, and ship
 with a vendored copy of [termbox2](https://github.com/termbox/termbox2), so it has
 no runtime dependencies beyond a POSIX terminal.
 
-The current version is `v0.1-alpha`; it is shown in the title bar and is built
-from `APP_VERSION` in `include/app/app.h`.
+<br>
+<p align="center">
+  <img src=".github/assets/demo.png" alt="vlsx demo" width="600"/>
+  <br>
+  <em>vlsx v0.1</em>
+</p>
+<br>
 
 ## Features
 

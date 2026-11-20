@@ -39,7 +39,7 @@ void mac_multicast_view_render(const mac_multicast_screen_t *screen, const layou
     }
 
     if (!screen->is_valid) {
-        ui_render_input_error(start_x, start_y + 1, screen->status.message);
+        ui_render_input_error(start_x, start_y + 2, screen->status.message);
         return;
     }
 
