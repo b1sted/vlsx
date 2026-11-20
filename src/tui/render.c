@@ -14,6 +14,7 @@
 #include "tui/backend.h"
 #include "tui/chrome.h"
 #include "tui/layout.h"
+#include "tui/primitives.h"
 #include "tui/theme.h"
 #include "tui/views/dhcp/dhcp_tabbar.h"
 #include "tui/views/dhcp/dhcpv4_view.h"
@@ -35,10 +36,7 @@ static void present_frame(void);
 
 static void present_frame(void)
 {
-    if (app.current_focus != FOCUS_INPUT) {
-        tb_hide_cursor();
-    }
-
+    tb_hide_cursor();
     tui_backend_present();
 }
 
@@ -118,6 +116,7 @@ static void render_too_small(int width, int height)
 void render_frame(void)
 {
     tui_backend_clear();
+    ui_render_set_input_focus(app.current_focus == FOCUS_INPUT);
 
     const int width = tui_backend_width();
     const int height = tui_backend_height();

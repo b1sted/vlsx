@@ -14,6 +14,31 @@
 static void render_input_field(int x, int y, const input_field_t *field, const char *placeholder,
                                bool is_active);
 
+static bool input_focused = false;
+
+void ui_render_set_input_focus(bool focused)
+{
+    input_focused = focused;
+}
+
+void ui_render_input_cursor(int x, int y, const input_field_t *field, const char *placeholder)
+{
+    if (field == NULL || !input_focused) {
+        return;
+    }
+
+    char under_cursor = ' ';
+
+    if (field->buf != NULL && field->cursor < field->len) {
+        under_cursor = field->buf[field->cursor];
+    } else if (field->len == 0 && placeholder != NULL && field->cursor < strlen(placeholder)) {
+        under_cursor = placeholder[field->cursor];
+    }
+
+    tb_set_cell(x + (int)field->cursor, y, (uint32_t)(unsigned char)under_cursor,
+                TUI_COLOR_SILVER, TUI_COLOR_BLACK);
+}
+
 static void render_input_field(int x, int y, const input_field_t *field, const char *placeholder,
                                bool is_active)
 {
@@ -30,7 +55,7 @@ static void render_input_field(int x, int y, const input_field_t *field, const c
     }
 
     if (is_active) {
-        tb_set_cursor(x + (int)field->cursor, y);
+        ui_render_input_cursor(x, y, field, placeholder);
     }
 }
 

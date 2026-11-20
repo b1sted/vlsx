@@ -230,26 +230,22 @@ bool vlsm_view_handle_event(const vlsm_screen_t *screen, const ui_event_t *event
     const int max_row = table_max_row_offset(&table, vlsm_view_height);
     const int max_column = table_max_column_offset(&table, vlsm_view_width);
 
-    if (event->kind == UI_EVENT_KEY_DOWN ||
-        (event->kind == UI_EVENT_KEY_CHAR && event->ch == (uint32_t)'j')) {
+    if (event->kind == UI_EVENT_KEY_CHAR && event->ch == (uint32_t)'j') {
         vlsm_view_row_offset = vlsm_view_clamp(vlsm_view_row_offset + 1, 0, max_row);
         return true;
     }
 
-    if (event->kind == UI_EVENT_KEY_UP ||
-        (event->kind == UI_EVENT_KEY_CHAR && event->ch == (uint32_t)'k')) {
+    if (event->kind == UI_EVENT_KEY_CHAR && event->ch == (uint32_t)'k') {
         vlsm_view_row_offset = vlsm_view_clamp(vlsm_view_row_offset - 1, 0, max_row);
         return true;
     }
 
-    if (event->kind == UI_EVENT_KEY_RIGHT ||
-        (event->kind == UI_EVENT_KEY_CHAR && event->ch == (uint32_t)'l')) {
+    if (event->kind == UI_EVENT_KEY_CHAR && event->ch == (uint32_t)'l') {
         vlsm_view_column_offset = vlsm_view_clamp(vlsm_view_column_offset + 1, 0, max_column);
         return true;
     }
 
-    if (event->kind == UI_EVENT_KEY_LEFT ||
-        (event->kind == UI_EVENT_KEY_CHAR && event->ch == (uint32_t)'h')) {
+    if (event->kind == UI_EVENT_KEY_CHAR && event->ch == (uint32_t)'h') {
         vlsm_view_column_offset = vlsm_view_clamp(vlsm_view_column_offset - 1, 0, max_column);
         return true;
     }

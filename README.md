@@ -167,8 +167,8 @@ terminal redraws the layout automatically.
 
 | Key | Action |
 | --- | --- |
-| `↑` / `↓` | Move the sidebar selection; switch fields in a form; scroll VLSM rows while the table is displayed |
-| `←` / `→` | Switch tabs when the tab bar is focused; move the cursor inside an input; scroll VLSM columns |
+| `↑` / `↓` | Move the sidebar selection; switch fields in a form |
+| `←` / `→` | Switch tabs when the tab bar is focused; move the cursor inside an input |
 | `Enter` | Open the selected module or calculate the current form |
 | `Tab` | Cycle through the tabs of the current module |
 | `1`–`9` | Jump directly to a tab while the tab bar is focused |
@@ -176,7 +176,11 @@ terminal redraws the layout automatically.
 | `q` | Quit from the navigation screens; leave a VLSM field with `Esc` first |
 | `Ctrl-U` | Clear the active input field |
 | `Ctrl-A` / `Ctrl-E` | Move the cursor to the start or end of the active input |
-| `h` / `j` / `k` / `l` | Scroll the VLSM table left, down, up, and right |
+| `h` / `j` / `k` / `l` | Scroll the VLSM table left, down, up, and right while it is displayed |
+
+The active input field is marked with a block cursor. `↑` / `↓` keep switching
+fields after a result is calculated; the VLSM table is scrolled with
+`h` / `j` / `k` / `l`.
 
 Invalid input never leaves a stale result on screen: the previous result is
 cleared and a specific validation message is shown instead.
