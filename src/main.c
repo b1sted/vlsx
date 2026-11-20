@@ -9,14 +9,11 @@
 #include "app/app.h"
 #include "app/events.h"
 #include "common/ui_event.h"
+#include "common/version.h"
 #include "screens/ip/ip_screen.h"
 #include "tui/backend.h"
 #include "tui/render.h"
 #include "tui/views/ip/vlsm_view.h"
-
-#ifndef VLSX_VERSION
-#define VLSX_VERSION "dev"
-#endif
 
 static bool vlsm_view_is_active(void);
 
@@ -30,7 +27,7 @@ int main(int argc, char *argv[])
 {
     if (argc > 1) {
         if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
-            printf("vlsx %s\n", VLSX_VERSION);
+            printf("vlsx v%s (%s)\n", VLSX_VERSION, VLSX_ARCH);
             return EXIT_SUCCESS;
         }
 

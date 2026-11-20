@@ -356,10 +356,7 @@ jobs:
     environment: release
     outputs:
       version: ${{ steps.meta.outputs.version }}
-      macos_arm64_sha256: ${{ steps.hashes.outputs.macos_arm64 }}
-      macos_intel_modern_sha256: ${{ steps.hashes.outputs.macos_intel_modern }}
-      linux_amd64_sha256: ${{ steps.hashes.outputs.linux_amd64 }}
-      linux_arm64_sha256: ${{ steps.hashes.outputs.linux_arm64 }}
+      source_sha256: ${{ steps.source.outputs.sha256 }}
 
     steps:
       - name: Checkout
@@ -373,6 +370,16 @@ jobs:
       - name: Set release version
         id: meta
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Compute source archive checksum
+        id: source
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          curl -fsSL --retry 5 --retry-delay 2 \
+            -o /tmp/vlsx-source.tar.gz \
+            "https://github.com/b1sted/vlsx/archive/refs/tags/v${VERSION}.tar.gz"
+          echo "sha256=$(sha256sum /tmp/vlsx-source.tar.gz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
 
       - name: Build release archives
         run: |
@@ -451,14 +458,6 @@ jobs:
         with:
           subject-path: 'release_dist/*'
 
-      - name: Collect archive checksums
-        id: hashes
-        run: |
-          echo "macos_arm64=$(sha256sum release_dist/vlsx-macos-arm64.tar.gz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-          echo "macos_intel_modern=$(sha256sum release_dist/vlsx-macos-intel-modern.tar.gz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-          echo "linux_amd64=$(sha256sum release_dist/vlsx-linux-amd64.tar.gz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-          echo "linux_arm64=$(sha256sum release_dist/vlsx-linux-arm64.tar.gz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
@@ -489,10 +488,7 @@ jobs:
         env:
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           VERSION: ${{ needs.release.outputs.version }}
-          MACOS_ARM64_SHA256: ${{ needs.release.outputs.macos_arm64_sha256 }}
-          MACOS_INTEL_MODERN_SHA256: ${{ needs.release.outputs.macos_intel_modern_sha256 }}
-          LINUX_AMD64_SHA256: ${{ needs.release.outputs.linux_amd64_sha256 }}
-          LINUX_ARM64_SHA256: ${{ needs.release.outputs.linux_arm64_sha256 }}
+          SOURCE_SHA256: ${{ needs.release.outputs.source_sha256 }}
         run: |
           set -euo pipefail
 
@@ -509,41 +505,77 @@ jobs:
           mkdir -p Formula
           cat > Formula/vlsx.rb <<EOF
           class Vlsx < Formula
-            desc "A lightweight terminal toolkit in C for network engineers"
+            desc "Lightweight terminal toolkit in C for network engineers"
             homepage "https://github.com/b1sted/vlsx"
-            version "${VERSION}"
+            url "https://github.com/b1sted/vlsx/archive/refs/tags/v${VERSION}.tar.gz"
+            sha256 "${SOURCE_SHA256}"
             license "GPL-3.0-or-later"
 
-            on_macos do
-              on_arm do
-                url "https://github.com/b1sted/vlsx/releases/download/v${VERSION}/vlsx-macos-arm64.tar.gz"
-                sha256 "${MACOS_ARM64_SHA256}"
-              end
-
-              on_intel do
-                url "https://github.com/b1sted/vlsx/releases/download/v${VERSION}/vlsx-macos-intel-modern.tar.gz"
-                sha256 "${MACOS_INTEL_MODERN_SHA256}"
-              end
-            end
-
-            on_linux do
-              on_arm do
-                url "https://github.com/b1sted/vlsx/releases/download/v${VERSION}/vlsx-linux-arm64.tar.gz"
-                sha256 "${LINUX_ARM64_SHA256}"
-              end
-
-              on_intel do
-                url "https://github.com/b1sted/vlsx/releases/download/v${VERSION}/vlsx-linux-amd64.tar.gz"
-                sha256 "${LINUX_AMD64_SHA256}"
-              end
-            end
-
             def install
-              bin.install "vlsx"
+              system "make", "VERSION=#{version}"
+              bin.install "bin/vlsx"
             end
 
             test do
-              system "#{bin}/vlsx", "-v"
+              require "io/console"
+              require "pty"
+              require "timeout"
+
+              vlsx = bin/"vlsx"
+              assert_match "vlsx v#{version}", shell_output("#{vlsx} -v")
+
+              run_tui = lambda do |keys|
+                output = +""
+                reader, writer, pid = PTY.spawn({ "TERM" => "xterm-256color" }, vlsx.to_s)
+
+                begin
+                  reader.winsize = [40, 120]
+
+                  Timeout.timeout(10) do
+                    loop do
+                      output << reader.readpartial(4096)
+                      break if output.include?("IP & VLSM")
+                    end
+                  end
+
+                  writer.write(keys)
+                  writer.flush
+
+                  Timeout.timeout(10) do
+                    loop { output << reader.readpartial(4096) }
+                  end
+                rescue EOFError, Errno::EIO
+                  nil
+                rescue Timeout::Error
+                  Process.kill("KILL", pid)
+                  raise
+                ensure
+                  begin
+                    writer.close
+                  rescue IOError, Errno::EIO
+                    nil
+                  end
+                  begin
+                    reader.close
+                  rescue IOError, Errno::EIO
+                    nil
+                  end
+                  begin
+                    Process.wait(pid)
+                  rescue Errno::ECHILD
+                    nil
+                  end
+                end
+
+                output
+              end
+
+              ipv4_output = run_tui.call("\r\r192.168.0.54/26\rq")
+              assert_match "255.255.255.192", ipv4_output
+              assert_match "192.168.0.62", ipv4_output
+
+              multicast_output = run_tui.call("\e[B\r2\r239.1.1.15\rq")
+              assert_match "01:00:5E:01:01:0F", multicast_output
             end
           end
           EOF

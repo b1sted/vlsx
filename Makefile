@@ -1,8 +1,9 @@
 CC          ?= gcc
 AR          ?= ar
 VERSION     ?= dev
+VERSION_NUMBER := $(patsubst v%,%,$(VERSION))
 override CPPFLAGS += -Iinclude -isystem third_party -MMD -MP -D_XOPEN_SOURCE=700 -D_DEFAULT_SOURCE \
-                     -DVLSX_VERSION=\"$(VERSION)\"
+                     -DVLSX_VERSION=\"$(VERSION_NUMBER)\"
 override CFLAGS   += -std=gnu99 \
                     -Wall -Wextra -Werror \
                     -pedantic \

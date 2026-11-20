@@ -8,10 +8,13 @@
 </p>
 <p align="center">
   <a href="https://github.com/b1sted/vlsx/actions/workflows/test.yml">
-    <img src="https://github.com/b1sted/vlsx/actions/workflows/test.yml/badge.svg?branch=main&style=flat-square&label=Tests" alt="Test Status">
+    <img src="https://img.shields.io/github/actions/workflow/status/b1sted/vlsx/test.yml?style=flat-square&label=Test,%20Leak%20%26%20Lint" alt="Test Status">
   </a>
   <a href="https://github.com/b1sted/vlsx/releases/latest">
     <img src="https://img.shields.io/github/v/release/b1sted/vlsx?style=flat-square&label=Release" alt="Latest Release">
+  </a>
+  <a href="https://github.com/b1sted/homebrew-tap">
+    <img src="https://img.shields.io/badge/Homebrew-b1sted%2Ftap-FBB040?style=flat-square&logo=homebrew&logoColor=white" alt="Homebrew Tap">
   </a>
   <a href="#license">
     <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-blue?style=flat-square" alt="License">
@@ -19,6 +22,7 @@
 </p>
 <p align="center">
   <a href="#features">Features</a> •
+  <a href="#installation">Installation</a> •
   <a href="#modules">Modules</a> •
   <a href="#controls">Controls</a> •
   <a href="#build-and-run">Build and run</a> •
@@ -64,6 +68,80 @@ no runtime dependencies beyond a POSIX terminal.
   minutes.
 - **Zero dependencies**: only libc, POSIX, and the vendored single-header
   `third_party/termbox2.h`.
+
+## Installation
+
+### Homebrew (macOS & Linux)
+
+```bash
+brew install b1sted/tap/vlsx
+```
+
+The tap tracks the latest stable release and builds it from source for the
+current platform.
+
+### Linux packages
+
+Native packages for `amd64`, `arm64`, `armv7`, and `riscv64` are attached to
+every [GitHub Release](https://github.com/b1sted/vlsx/releases). Download the
+package for your distribution and install it locally:
+
+```bash
+# Debian / Ubuntu
+sudo apt install ./vlsx_0.1.1_*.deb
+
+# Fedora / RHEL / openSUSE
+sudo dnf install ./vlsx-0.1.1.*.rpm
+
+# Arch Linux
+sudo pacman -U ./vlsx-0.1.1-*.pkg.tar.zst
+```
+
+### Android (Termux)
+
+The release ships native Termux `.deb` packages for `aarch64`, `arm`, and
+`x86_64`:
+
+```bash
+pkg install ./vlsx_0.1.1_*.deb
+```
+
+### Prebuilt binaries (`.tar.gz`)
+
+Standalone archives are published for Linux (`amd64`, `arm64`, `armv7`,
+`riscv64`, and Luckfox ARM), Android/Termux, and macOS (`arm64`, Intel modern,
+and Intel legacy). Download the archive for your platform, unpack it, and move
+`vlsx` onto your `PATH`:
+
+```bash
+tar -xzf vlsx-linux-amd64.tar.gz
+sudo install -m 0755 vlsx /usr/local/bin/vlsx
+```
+
+> [!NOTE]
+> macOS marks binaries downloaded through a browser as quarantined. Remove the
+> attribute before the first run:
+>
+> ```bash
+> xattr -d com.apple.quarantine ./vlsx
+> ```
+
+### Verification
+
+Every release publishes checksums, a GPG signature, and build provenance.
+Verify the downloaded files with any of the following methods:
+
+```bash
+# SHA256 checksums
+sha256sum -c SHA256SUMS.txt --ignore-missing
+
+# GPG signature
+curl -fsSL https://github.com/b1sted.gpg | gpg --import && \
+  gpg --verify SHA256SUMS.txt.asc SHA256SUMS.txt
+
+# GitHub build attestation
+gh attestation verify vlsx-linux-amd64.tar.gz --repo b1sted/vlsx
+```
 
 ## Modules
 
