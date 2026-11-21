@@ -238,7 +238,7 @@ jobs:
               cp bin/vlsx "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
               chmod 0755 "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
               printf "%s\n" \
-                "Package: vlsx-termux" \
+                "Package: vlsx" \
                 "Version: $VERSION" \
                 "Architecture: $ARCH" \
                 "Maintainer: Nikita Mandrykin <pkg@basted.dev>" \
