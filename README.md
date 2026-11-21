@@ -88,13 +88,13 @@ package for your distribution and install it locally:
 
 ```bash
 # Debian / Ubuntu
-sudo apt install ./vlsx_0.1.1_*.deb
+sudo apt install ./vlsx_0.1.2_*.deb
 
 # Fedora / RHEL / openSUSE
-sudo dnf install ./vlsx-0.1.1.*.rpm
+sudo dnf install ./vlsx-0.1.2.*.rpm
 
 # Arch Linux
-sudo pacman -U ./vlsx-0.1.1-*.pkg.tar.zst
+sudo pacman -U ./vlsx-0.1.2-*.pkg.tar.zst
 ```
 
 ### Android (Termux)
@@ -104,7 +104,7 @@ The release ships native Termux `.deb` packages for `aarch64`, `arm`, and
 with the native Linux packages:
 
 ```bash
-pkg install ./vlsx-termux_0.1.1_*.deb
+pkg install ./vlsx-termux_0.1.2_*.deb
 ```
 
 ### Prebuilt binaries (`.tar.gz`)
