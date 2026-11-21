@@ -13,6 +13,9 @@
   <a href="https://github.com/b1sted/vlsx/releases/latest">
     <img src="https://img.shields.io/github/v/release/b1sted/vlsx?style=flat-square&label=Release" alt="Latest Release">
   </a>
+  <a href="https://packages.basted.dev/#repositories">
+    <img src="https://img.shields.io/badge/Repo-basted_packages-3B82F6?style=flat-square" alt="basted packages">
+  </a>
   <a href="https://github.com/b1sted/homebrew-tap">
     <img src="https://img.shields.io/badge/Homebrew-b1sted%2Ftap-FBB040?style=flat-square&logo=homebrew&logoColor=white" alt="Homebrew Tap">
   </a>
@@ -41,7 +44,7 @@ no runtime dependencies beyond a POSIX terminal.
 <p align="center">
   <img src=".github/assets/demo.png" alt="vlsx demo" width="600"/>
   <br>
-  <em>vlsx v0.1</em>
+  <em>vlsx v0.1.2</em>
 </p>
 <br>
 
@@ -71,6 +74,11 @@ no runtime dependencies beyond a POSIX terminal.
 
 ## Installation
 
+The easiest way to install and keep `vlsx` up to date is via the
+[basted packages repositories](https://packages.basted.dev/#repositories) or Homebrew.
+Standalone packages and archives are also attached to every
+[GitHub Release](https://github.com/b1sted/vlsx/releases).
+
 ### Homebrew (macOS & Linux)
 
 ```bash
@@ -80,11 +88,65 @@ brew install b1sted/tap/vlsx
 The tap tracks the latest stable release and builds it from source for the
 current platform.
 
-### Linux packages
+### Linux repositories (`apt`, `dnf`, `pacman`)
 
-Native packages for `amd64`, `arm64`, `armv7`, and `riscv64` are attached to
-every [GitHub Release](https://github.com/b1sted/vlsx/releases). Download the
-package for your distribution and install it locally:
+All Linux repositories carry native builds for `amd64`, `arm64`, `armv7`, and
+`riscv64`, signed with the repository key (`packages.basted.dev/gpg.key`).
+
+#### Debian / Ubuntu (`apt`)
+
+Supports Debian 12+, Ubuntu 22.04+, and compatible derivatives:
+
+```bash
+curl -fsSL https://packages.basted.dev/gpg.key \
+  | sudo gpg --yes --dearmor -o /usr/share/keyrings/basted.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/basted.gpg] \
+https://packages.basted.dev/apt stable main" \
+  | sudo tee /etc/apt/sources.list.d/basted.list
+
+sudo apt update
+sudo apt install vlsx
+```
+
+#### Fedora / RHEL (`dnf`)
+
+Supports Fedora, RHEL 9+, and compatible rebuilds:
+
+```bash
+sudo tee /etc/yum.repos.d/basted.repo >/dev/null <<'EOF'
+[basted]
+name=basted packages
+baseurl=https://packages.basted.dev/rpm
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.basted.dev/gpg.key
+EOF
+
+sudo dnf install vlsx
+```
+
+#### Arch Linux (`pacman`)
+
+```bash
+curl -fsSL https://packages.basted.dev/gpg.key \
+  | sudo pacman-key --add -
+sudo pacman-key --lsign-key 3DFD8F2C2444ED194636CED66F19EE24A4124218
+
+printf '\n[basted]\nSigLevel = Required DatabaseOptional\n%s\n' \
+  'Server = https://packages.basted.dev/arch/$arch' \
+  | sudo tee -a /etc/pacman.conf >/dev/null
+
+sudo pacman -Syu
+sudo pacman -S vlsx
+```
+
+<details>
+<summary>Manual installation from GitHub Release packages (.deb / .rpm / .pkg.tar.zst)</summary>
+
+Download the package for your distribution and architecture from the
+[GitHub Releases](https://github.com/b1sted/vlsx/releases) page and install it locally:
 
 ```bash
 # Debian / Ubuntu
@@ -97,15 +159,36 @@ sudo dnf install ./vlsx-0.1.2.*.rpm
 sudo pacman -U ./vlsx-0.1.2-*.pkg.tar.zst
 ```
 
+</details>
+
 ### Android (Termux)
 
-The release ships native Termux `.deb` packages for `aarch64`, `arm`, and
-`x86_64`. They use a `vlsx-termux_` filename prefix so they are not confused
-with the native Linux packages:
+Native Termux builds are available for `aarch64`, `arm`, and `x86_64` via the
+Termux repository:
+
+```bash
+pkg install gnupg
+mkdir -p "$PREFIX/etc/apt/trusted.gpg.d" "$PREFIX/etc/apt/sources.list.d"
+curl -fsSL https://packages.basted.dev/gpg.key \
+  | gpg --yes --dearmor -o "$PREFIX/etc/apt/trusted.gpg.d/basted.gpg"
+echo "deb https://packages.basted.dev/termux stable main" \
+  > "$PREFIX/etc/apt/sources.list.d/basted.list"
+
+pkg update
+pkg install vlsx
+```
+
+<details>
+<summary>Manual installation from GitHub Release (.deb)</summary>
+
+Termux release files use a `vlsx-termux_` filename prefix so they are not
+confused with the native Linux packages, while the installed package name is `vlsx`:
 
 ```bash
 pkg install ./vlsx-termux_0.1.2_*.deb
 ```
+
+</details>
 
 ### Prebuilt binaries (`.tar.gz`)
 
@@ -129,8 +212,11 @@ sudo install -m 0755 vlsx /usr/local/bin/vlsx
 
 ### Verification
 
-Every release publishes checksums, a GPG signature, and build provenance.
-Verify the downloaded files with any of the following methods:
+Release assets use a dedicated release signing subkey
+([github.com/b1sted.gpg](https://github.com/b1sted.gpg)), while package
+repositories use the package signing subkey
+([packages.basted.dev/gpg.key](https://packages.basted.dev/gpg.key)).
+Verify downloaded GitHub Release archives with any of the following methods:
 
 ```bash
 # SHA256 checksums
