@@ -5,12 +5,13 @@
 
 #include <stdbool.h>
 
+#include "common/version.h"
 #include "screens/dhcp/dhcp_screen.h"
 #include "screens/ip/ip_screen.h"
 #include "screens/l2/mac_screen.h"
 #include "screens/metrics/metrics_screen.h"
 
-#define APP_VERSION "v0.1"
+#define APP_VERSION "v" VLSX_VERSION
 
 typedef enum {
     FOCUS_SIDEBAR,
