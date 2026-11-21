@@ -232,13 +232,13 @@ jobs:
               make CC=clang VERSION="$VERSION"
               ./bin/vlsx -v
               ARCH="$(dpkg --print-architecture)"
-              PKG="vlsx_${VERSION}_${ARCH}.deb"
+              PKG="vlsx-termux_${VERSION}_${ARCH}.deb"
               PKGROOT="pkgroot"
               mkdir -p "$PKGROOT/DEBIAN" "$PKGROOT/data/data/com.termux/files/usr/bin"
               cp bin/vlsx "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
               chmod 0755 "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
               printf "%s\n" \
-                "Package: vlsx" \
+                "Package: vlsx-termux" \
                 "Version: $VERSION" \
                 "Architecture: $ARCH" \
                 "Maintainer: Nikita Mandrykin <pkg@basted.dev>" \
