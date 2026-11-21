@@ -238,7 +238,7 @@ jobs:
               cp bin/vlsx "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
               chmod 0755 "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
               printf "%s\n" \
-                "Package: vlsx-termux" \
+                "Package: vlsx" \
                 "Version: $VERSION" \
                 "Architecture: $ARCH" \
                 "Maintainer: Nikita Mandrykin <pkg@basted.dev>" \
@@ -589,3 +589,20 @@ jobs:
           git commit -S -m "vlsx ${VERSION}"
           git pull --rebase origin main
           git push origin HEAD:main
+
+  signal-packages:
+    name: Notify packages.basted.dev
+    needs: release
+    runs-on: ubuntu-latest
+    environment: packages
+    permissions:
+      contents: read
+
+    steps:
+      - name: Dispatch a packages rebuild
+        run: |
+          curl -fsSL -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.PACKAGES_DISPATCH_TOKEN }}" \
+            https://api.github.com/repos/b1sted/packages.basted.dev/dispatches \
+            -d '{"event_type":"new-release"}'
