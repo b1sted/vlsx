@@ -100,10 +100,11 @@ sudo pacman -U ./vlsx-0.1.1-*.pkg.tar.zst
 ### Android (Termux)
 
 The release ships native Termux `.deb` packages for `aarch64`, `arm`, and
-`x86_64`:
+`x86_64`. They use a `vlsx-termux_` filename prefix so they are not confused
+with the native Linux packages:
 
 ```bash
-pkg install ./vlsx_0.1.1_*.deb
+pkg install ./vlsx-termux_0.1.1_*.deb
 ```
 
 ### Prebuilt binaries (`.tar.gz`)
@@ -375,9 +376,10 @@ published unless those checks pass. It then builds and smoke-tests:
 - macOS: Apple Silicon, Intel legacy (10.7), and Intel modern (10.9).
 
 The release publishes `.tar.gz` archives, `deb`/`rpm`/Arch Linux packages for
-Linux, Termux `.deb` packages, a GPG-signed `SHA256SUMS.txt`, GitHub build
-provenance attestations, and an updated Homebrew tap formula. Tags containing a
-hyphen, such as `v0.2.0-rc1`, are marked as prereleases.
+Linux, Termux `.deb` packages named `vlsx-termux_*`, a GPG-signed
+`SHA256SUMS.txt`, GitHub build provenance attestations, and an updated Homebrew
+tap formula. Tags containing a hyphen, such as `v0.2.0-rc1`, are marked as
+prereleases.
 
 ### Local checks
 
