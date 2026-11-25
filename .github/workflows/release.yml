@@ -47,10 +47,26 @@ jobs:
           path: artifact/
           if-no-files-found: error
 
-  build-linux-arm64:
-    name: Build (linux-arm64)
+  build-linux-cross:
+    name: Build (linux-${{ matrix.name }})
     needs: test
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: arm64
+            cross: aarch64-linux-gnu
+            qemu: qemu-aarch64
+            pkg: gcc-aarch64-linux-gnu libc6-dev-arm64-cross
+          - name: armv7
+            cross: arm-linux-gnueabihf
+            qemu: qemu-arm
+            pkg: gcc-arm-linux-gnueabihf libc6-dev-armhf-cross
+          - name: riscv64
+            cross: riscv64-linux-gnu
+            qemu: qemu-riscv64
+            pkg: gcc-riscv64-linux-gnu libc6-dev-riscv64-cross
 
     steps:
       - name: Checkout
@@ -60,17 +76,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            gcc-aarch64-linux-gnu libc6-dev-arm64-cross qemu-user
+            ${{ matrix.pkg }} qemu-user
 
       - name: Build release binary
         run: >-
-          make CC=aarch64-linux-gnu-gcc
+          make CC=${{ matrix.cross }}-gcc
           VERSION="${GITHUB_REF_NAME#v}"
 
       - name: Smoke test under QEMU
         run: >-
-          QEMU_LD_PREFIX=/usr/aarch64-linux-gnu
-          qemu-aarch64 ./bin/vlsx -v
+          QEMU_LD_PREFIX=/usr/${{ matrix.cross }}
+          ${{ matrix.qemu }} ./bin/vlsx -v
 
       - name: Stage artifact
         run: |
@@ -80,79 +96,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: vlsx-linux-arm64
-          path: artifact/
-          if-no-files-found: error
-
-  build-linux-armv7:
-    name: Build (linux-armv7)
-    needs: test
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-
-      - name: Install cross toolchain and QEMU
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends gcc-arm-linux-gnueabihf libc6-dev-armhf-cross qemu-user
-
-      - name: Build release binary
-        run: >-
-          make CC=arm-linux-gnueabihf-gcc
-          VERSION="${GITHUB_REF_NAME#v}"
-
-      - name: Smoke test under QEMU
-        run: >-
-          QEMU_LD_PREFIX=/usr/arm-linux-gnueabihf
-          qemu-arm ./bin/vlsx -v
-
-      - name: Stage artifact
-        run: |
-          mkdir -p artifact
-          cp bin/vlsx artifact/vlsx
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: vlsx-linux-armv7
-          path: artifact/
-          if-no-files-found: error
-
-  build-linux-riscv64:
-    name: Build (linux-riscv64)
-    needs: test
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-
-      - name: Install cross toolchain and QEMU
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends gcc-riscv64-linux-gnu libc6-dev-riscv64-cross qemu-user
-
-      - name: Build release binary
-        run: >-
-          make CC=riscv64-linux-gnu-gcc
-          VERSION="${GITHUB_REF_NAME#v}"
-
-      - name: Smoke test under QEMU
-        run: >-
-          QEMU_LD_PREFIX=/usr/riscv64-linux-gnu
-          qemu-riscv64 ./bin/vlsx -v
-
-      - name: Stage artifact
-        run: |
-          mkdir -p artifact
-          cp bin/vlsx artifact/vlsx
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: vlsx-linux-riscv64
+          name: vlsx-linux-${{ matrix.name }}
           path: artifact/
           if-no-files-found: error
 
@@ -225,47 +169,24 @@ jobs:
           platforms: arm
 
       - name: Build, smoke test, and package in Termux
+        env:
+          PKG_NAME: vlsx
+          BIN_PATH: bin/vlsx
+          VERSION_FLAG: -v
+          HOMEPAGE: https://github.com/b1sted/vlsx
+          DESCRIPTION: A lightweight terminal toolkit in C for network engineers to calculate VLSM, multicast MACs, SLA metrics, and DHCP timers.
+          MAINTAINER: Nikita Mandrykin <pkg@basted.dev>
         run: |
           chmod -R a+rwX .
           docker run --rm \
             --platform ${{ matrix.platform }} \
             --security-opt seccomp:unconfined \
+            -e PKG_NAME -e BIN_PATH -e VERSION_FLAG -e HOMEPAGE \
+            -e DESCRIPTION -e MAINTAINER \
             -v "$PWD:/workspace" \
             -w /workspace \
             "${{ matrix.image }}" \
-            /entrypoint.sh bash -c '
-              set -euo pipefail
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update
-              apt-get install -y clang make
-              VERSION="${1#v}"
-              make CC=clang VERSION="$VERSION"
-              ./bin/vlsx -v
-              ARCH="$(dpkg --print-architecture)"
-              PKG="vlsx-termux_${VERSION}_${ARCH}.deb"
-              PKGROOT="pkgroot"
-              mkdir -p "$PKGROOT/DEBIAN" "$PKGROOT/data/data/com.termux/files/usr/bin"
-              cp bin/vlsx "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
-              chmod 0755 "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
-              printf "%s\n" \
-                "Package: vlsx" \
-                "Version: $VERSION" \
-                "Architecture: $ARCH" \
-                "Maintainer: Nikita Mandrykin <pkg@basted.dev>" \
-                "Homepage: https://github.com/b1sted/vlsx" \
-                "Section: utils" \
-                "Priority: optional" \
-                "Description: A lightweight terminal toolkit in C for network engineers to calculate VLSM, multicast MACs, SLA metrics, and DHCP timers." \
-                > "$PKGROOT/DEBIAN/control"
-              dpkg-deb --root-owner-group --build "$PKGROOT" "$PKG"
-              test "$(dpkg-deb -f "$PKG" Package)" = "vlsx"
-              dpkg -i "$PKG"
-              vlsx -v
-              mkdir -p artifact
-              cp "$PKG" artifact/
-              cp bin/vlsx artifact/vlsx
-              chmod -R a+rwX artifact
-            ' _ "${GITHUB_REF_NAME}"
+            /entrypoint.sh bash /workspace/scripts/termux-build.sh "${GITHUB_REF_NAME}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -356,9 +277,7 @@ jobs:
     needs:
       - test
       - build-linux-amd64
-      - build-linux-arm64
-      - build-linux-armv7
-      - build-linux-riscv64
+      - build-linux-cross
       - build-linux-luckfox
       - build-android-termux
       - build-macos-intel
