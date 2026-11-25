@@ -29,16 +29,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
-      - name: Build release binary
-        run: make VERSION="${GITHUB_REF_NAME#v}"
+      - name: Build static binary
+        run: make STATIC=1 VERSION="${GITHUB_REF_NAME#v}"
 
-      - name: Smoke test
+      - name: Smoke test static binary
         run: ./bin/vlsx -v
 
-      - name: Stage artifact
+      - name: Stage static binary
         run: |
           mkdir -p artifact
-          cp bin/vlsx artifact/vlsx
+          cp bin/vlsx artifact/vlsx-static
+
+      - name: Build dynamic binary
+        run: make clean && make VERSION="${GITHUB_REF_NAME#v}"
+
+      - name: Smoke test dynamic binary
+        run: ./bin/vlsx -v
+
+      - name: Stage dynamic binary
+        run: cp bin/vlsx artifact/vlsx-dynamic
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
@@ -78,20 +87,28 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             ${{ matrix.pkg }} qemu-user
 
-      - name: Build release binary
+      - name: Build static binary
         run: >-
-          make CC=${{ matrix.cross }}-gcc
+          make CC=${{ matrix.cross }}-gcc STATIC=1
           VERSION="${GITHUB_REF_NAME#v}"
 
-      - name: Smoke test under QEMU
+      - name: Smoke test static binary under QEMU
         run: >-
           QEMU_LD_PREFIX=/usr/${{ matrix.cross }}
           ${{ matrix.qemu }} ./bin/vlsx -v
 
-      - name: Stage artifact
+      - name: Stage static binary
         run: |
           mkdir -p artifact
-          cp bin/vlsx artifact/vlsx
+          cp bin/vlsx artifact/vlsx-static
+
+      - name: Build dynamic binary
+        run: >-
+          make clean && make CC=${{ matrix.cross }}-gcc
+          VERSION="${GITHUB_REF_NAME#v}"
+
+      - name: Stage dynamic binary
+        run: cp bin/vlsx artifact/vlsx-dynamic
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
@@ -326,10 +343,10 @@ jobs:
             tar -C "$dir" -czf "release_dist/vlsx-$name.tar.gz" vlsx
           }
 
-          pack artifacts/vlsx-linux-amd64/vlsx linux-amd64
-          pack artifacts/vlsx-linux-arm64/vlsx linux-arm64
-          pack artifacts/vlsx-linux-armv7/vlsx linux-armv7
-          pack artifacts/vlsx-linux-riscv64/vlsx linux-riscv64
+          pack artifacts/vlsx-linux-amd64/vlsx-static linux-amd64
+          pack artifacts/vlsx-linux-arm64/vlsx-static linux-arm64
+          pack artifacts/vlsx-linux-armv7/vlsx-static linux-armv7
+          pack artifacts/vlsx-linux-riscv64/vlsx-static linux-riscv64
           pack artifacts/vlsx-linux-luckfox/vlsx linux-luckfox
           pack artifacts/vlsx-macos-arm64/vlsx macos-arm64
           pack artifacts/vlsx-macos-intel/vlsx-legacy macos-intel-legacy
@@ -357,7 +374,7 @@ jobs:
           for pair in linux-amd64:amd64 linux-arm64:arm64 linux-armv7:arm7 linux-riscv64:riscv64; do
             name="${pair%%:*}"
             arch="${pair##*:}"
-            cp "artifacts/vlsx-$name/vlsx" nfpm_staging/vlsx
+            cp "artifacts/vlsx-$name/vlsx-dynamic" nfpm_staging/vlsx
             chmod 0755 nfpm_staging/vlsx
             for packager in deb rpm archlinux; do
               NFPM_ARCH="$arch" VERSION="$VERSION" \
