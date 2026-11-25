@@ -225,47 +225,24 @@ jobs:
           platforms: arm
 
       - name: Build, smoke test, and package in Termux
+        env:
+          PKG_NAME: vlsx
+          BIN_PATH: bin/vlsx
+          VERSION_FLAG: -v
+          HOMEPAGE: https://github.com/b1sted/vlsx
+          DESCRIPTION: A lightweight terminal toolkit in C for network engineers to calculate VLSM, multicast MACs, SLA metrics, and DHCP timers.
+          MAINTAINER: Nikita Mandrykin <pkg@basted.dev>
         run: |
           chmod -R a+rwX .
           docker run --rm \
             --platform ${{ matrix.platform }} \
             --security-opt seccomp:unconfined \
+            -e PKG_NAME -e BIN_PATH -e VERSION_FLAG -e HOMEPAGE \
+            -e DESCRIPTION -e MAINTAINER \
             -v "$PWD:/workspace" \
             -w /workspace \
             "${{ matrix.image }}" \
-            /entrypoint.sh bash -c '
-              set -euo pipefail
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update
-              apt-get install -y clang make
-              VERSION="${1#v}"
-              make CC=clang VERSION="$VERSION"
-              ./bin/vlsx -v
-              ARCH="$(dpkg --print-architecture)"
-              PKG="vlsx-termux_${VERSION}_${ARCH}.deb"
-              PKGROOT="pkgroot"
-              mkdir -p "$PKGROOT/DEBIAN" "$PKGROOT/data/data/com.termux/files/usr/bin"
-              cp bin/vlsx "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
-              chmod 0755 "$PKGROOT/data/data/com.termux/files/usr/bin/vlsx"
-              printf "%s\n" \
-                "Package: vlsx" \
-                "Version: $VERSION" \
-                "Architecture: $ARCH" \
-                "Maintainer: Nikita Mandrykin <pkg@basted.dev>" \
-                "Homepage: https://github.com/b1sted/vlsx" \
-                "Section: utils" \
-                "Priority: optional" \
-                "Description: A lightweight terminal toolkit in C for network engineers to calculate VLSM, multicast MACs, SLA metrics, and DHCP timers." \
-                > "$PKGROOT/DEBIAN/control"
-              dpkg-deb --root-owner-group --build "$PKGROOT" "$PKG"
-              test "$(dpkg-deb -f "$PKG" Package)" = "vlsx"
-              dpkg -i "$PKG"
-              vlsx -v
-              mkdir -p artifact
-              cp "$PKG" artifact/
-              cp bin/vlsx artifact/vlsx
-              chmod -R a+rwX artifact
-            ' _ "${GITHUB_REF_NAME}"
+            /entrypoint.sh bash /workspace/scripts/termux-build.sh "${GITHUB_REF_NAME}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
