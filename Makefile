@@ -34,6 +34,16 @@ else
     $(error Platform $(UNAME_S) not supported)
 endif
 
+# `STATIC=1` links the release binary statically. Only Linux ships a static
+# libc; elsewhere the flag is ignored with a warning.
+ifeq ($(STATIC),1)
+    ifeq ($(UNAME_S),Linux)
+        REL_LDFLAGS += -static
+    else
+        $(warning STATIC=1 is supported only on Linux; ignoring)
+    endif
+endif
+
 BINDIR := bin
 OBJDIR := obj
 SRCDIR := src
