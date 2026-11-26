@@ -18,7 +18,7 @@ concurrency:
 jobs:
   test:
     name: Test, leak & lint
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/tests.yml
 
   build-linux-amd64:
     name: Build (linux-amd64)
@@ -106,6 +106,11 @@ jobs:
         run: >-
           make clean && make CC=${{ matrix.cross }}-gcc
           VERSION="${GITHUB_REF_NAME#v}"
+
+      - name: Smoke test dynamic binary under QEMU
+        run: >-
+          QEMU_LD_PREFIX=/usr/${{ matrix.cross }}
+          ${{ matrix.qemu }} ./bin/vlsx -v
 
       - name: Stage dynamic binary
         run: cp bin/vlsx artifact/vlsx-dynamic
@@ -415,6 +420,7 @@ jobs:
   update-homebrew:
     name: Update Homebrew tap
     needs: release
+    if: ${{ !contains(github.ref_name, '-') }}
     runs-on: ubuntu-latest
     environment: homebrew
     permissions:
@@ -540,6 +546,7 @@ jobs:
   signal-packages:
     name: Notify packages.basted.dev
     needs: release
+    if: ${{ !contains(github.ref_name, '-') }}
     runs-on: ubuntu-latest
     environment: packages
     permissions:

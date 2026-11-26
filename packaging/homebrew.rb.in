@@ -1,0 +1,74 @@
+class Vlsx < Formula
+  desc "Lightweight terminal toolkit in C for network engineers"
+  homepage "https://github.com/b1sted/vlsx"
+  url "https://github.com/b1sted/vlsx/archive/refs/tags/v@VERSION@.tar.gz"
+  sha256 "@SHA256@"
+  license "GPL-3.0-or-later"
+
+  def install
+    system "make", "VERSION=#{version}"
+    bin.install "bin/vlsx"
+  end
+
+  test do
+    require "io/console"
+    require "pty"
+    require "timeout"
+
+    vlsx = bin/"vlsx"
+    assert_match "vlsx v#{version}", shell_output("#{vlsx} -v")
+
+    run_tui = lambda do |keys|
+      output = +""
+      reader, writer, pid = PTY.spawn({ "TERM" => "xterm-256color" }, vlsx.to_s)
+
+      begin
+        reader.winsize = [40, 120]
+
+        Timeout.timeout(10) do
+          loop do
+            output << reader.readpartial(4096)
+            break if output.include?("IP & VLSM")
+          end
+        end
+
+        writer.write(keys)
+        writer.flush
+
+        Timeout.timeout(10) do
+          loop { output << reader.readpartial(4096) }
+        end
+      rescue EOFError, Errno::EIO
+        nil
+      rescue Timeout::Error
+        Process.kill("KILL", pid)
+        raise
+      ensure
+        begin
+          writer.close
+        rescue IOError, Errno::EIO
+          nil
+        end
+        begin
+          reader.close
+        rescue IOError, Errno::EIO
+          nil
+        end
+        begin
+          Process.wait(pid)
+        rescue Errno::ECHILD
+          nil
+        end
+      end
+
+      output
+    end
+
+    ipv4_output = run_tui.call("\r\r192.168.0.54/26\rq")
+    assert_match "255.255.255.192", ipv4_output
+    assert_match "192.168.0.62", ipv4_output
+
+    multicast_output = run_tui.call("\e[B\r2\r239.1.1.15\rq")
+    assert_match "01:00:5E:01:01:0F", multicast_output
+  end
+end
