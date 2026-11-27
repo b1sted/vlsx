@@ -5,9 +5,9 @@ on:
     branches:
       - main
       - dev
+      - 'v*'
   pull_request:
   workflow_dispatch:
-  workflow_call:
 
 permissions:
   contents: read
@@ -17,53 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  unit-tests:
-    name: Unit tests (${{ matrix.os }}, ${{ matrix.cc }})
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-24.04
-            cc: gcc
-          - os: ubuntu-24.04
-            cc: clang
-          - os: macos-15
-            cc: clang
-
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-
-      - name: Build
-        run: make CC=${{ matrix.cc }}
-
-      - name: Run tests
-        run: make CC=${{ matrix.cc }} test
-
-  leaks:
-    name: Memory leaks
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-
-      - name: Check for memory leaks
-        run: make leaks
-
-  lint:
-    name: Static analysis
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-
-      - name: Install linters
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends clang-format-18 cppcheck
-
-      - name: Run linters
-        run: make lint CLANG_FORMAT=clang-format-18
+  ci:
+    uses: b1sted/ci/.github/workflows/c-ci.yml@v1
+    with:
+      lint_packages: clang-format-18 cppcheck
